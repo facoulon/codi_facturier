@@ -11,6 +11,9 @@ class Client(models.Model):
     email = models.EmailField()
     slug = models.SlugField()
 
+    def __unicode__(self):
+        return self.nom+" "+self.prenom
+
 class Devis(models.Model):
     DEVIS='Devis'
     FACTURE='Facture'
@@ -27,6 +30,7 @@ class Devis(models.Model):
     (RELANCE, "Relance"),
     (EN_ATTENTE, "En attente"),
     )
+
     date_de_creation_devis = models.DateTimeField(auto_now_add=True)
     date_de_modification = models.DateTimeField(auto_now=True)
     type = models.CharField(max_length=15, choices=TYPE_CHOICES, default=DEVIS)
@@ -34,6 +38,9 @@ class Devis(models.Model):
     etat = models.CharField(max_length=15, choices=ETAT_CHOICES, default=EN_ATTENTE)
 
     client = models.ForeignKey(Client, on_delete=models.PROTECT)
+
+    class Meta:
+        verbose_name_plural = 'Devis'
 
 class Produit(models.Model):
     nom = models.CharField(max_length=30)
@@ -43,6 +50,9 @@ class Produit(models.Model):
     prix = models.DecimalField(max_digits= 8, decimal_places=2)
     stock = models.IntegerField()
     slug = models.SlugField()
+
+    def __unicode__(self):
+        return self.nom
 
 class LigneDeCommande(models.Model):
     quantite = models.IntegerField()
