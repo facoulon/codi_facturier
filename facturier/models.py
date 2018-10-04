@@ -5,57 +5,52 @@ from django.db import models
 
 # Create your models here.
 
-class Client(models.Model):
-    nom = models.CharField(max_length=30)
-    prenom = models.CharField(max_length=30)
+class Customer(models.Model):
+    lastname = models.CharField(max_length=30)
+    firstname = models.CharField(max_length=30)
     email = models.EmailField()
+    country = models.CharField(max_length=30, null=True, blank=True)
+    city = models.CharField(max_length=50, null=True, blank=True)
+    cover = models.ImageField(upload_to="customer",blank=True)
     slug = models.SlugField()
 
     def __unicode__(self):
-        return self.nom+" "+self.prenom
+        return self.lastname+" "+self.firstname
 
-class Devis(models.Model):
-    DEVIS='Devis'
-    FACTURE='Facture'
-    PAIEMENT='Payés'
-    RELANCE='Relance'
-    EN_ATTENTE='En attente'
+class Quotation(models.Model):
 
     TYPE_CHOICES = (
-    (DEVIS, "Devis"),
-    (FACTURE, "Facture"),
+        ("QUOTATION", "Quotation"),
+        ("BILL", "Bill"),
     )
     ETAT_CHOICES =(
-    (PAIEMENT, "Payés"),
-    (RELANCE, "Relance"),
-    (EN_ATTENTE, "En attente"),
+        ("PAIEMENT", "PayPaidés"),
+        ("REVIVE", "Revive"),
+        ("WAITING", "Waiting"),
     )
 
-    date_de_creation_devis = models.DateTimeField(auto_now_add=True)
-    date_de_modification = models.DateTimeField(auto_now=True)
-    type = models.CharField(max_length=15, choices=TYPE_CHOICES, default=DEVIS)
-    date_de_creation_facture = models.DateTimeField()
-    etat = models.CharField(max_length=15, choices=ETAT_CHOICES, default=EN_ATTENTE)
+    Quotation_creation_date = models.DateTimeField(auto_now_add=True)
+    modified_date = models.DateTimeField(auto_now=True)
+    type = models.CharField(max_length=15, choices=TYPE_CHOICES, default="QUOTATION")
+    Bill_creation_date = models.DateTimeField()
+    status = models.CharField(max_length=15, choices=ETAT_CHOICES, default="WAITING")
 
-    client = models.ForeignKey(Client, on_delete=models.PROTECT)
+    customer = models.ForeignKey(Customer, on_delete=models.PROTECT)
 
-    class Meta:
-        verbose_name_plural = 'Devis'
-
-class Produit(models.Model):
-    nom = models.CharField(max_length=30)
+class Product(models.Model):
+    name = models.CharField(max_length=30)
     short_description = models.CharField(max_length=200)
     description = models.TextField()
-    image = models.ImageField(upload_to="produits")
-    prix = models.DecimalField(max_digits= 8, decimal_places=2)
+    cover = models.ImageField(upload_to="product")
+    price = models.DecimalField(max_digits= 8, decimal_places=2)
     stock = models.IntegerField()
     slug = models.SlugField()
 
     def __unicode__(self):
-        return self.nom
+        return self.name
 
-class LigneDeCommande(models.Model):
-    quantite = models.IntegerField()
+class CommandLine(models.Model):
+    quantity = models.IntegerField()
 
-    produit = models.ForeignKey(Produit, on_delete=models.PROTECT)
-    devis = models.ForeignKey(Devis, on_delete=models.PROTECT)
+    product = models.ForeignKey(Product, on_delete=models.PROTECT)
+    quotation = models.ForeignKey(Quotation, on_delete=models.PROTECT)

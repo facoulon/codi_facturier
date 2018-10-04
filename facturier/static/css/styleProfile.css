@@ -1,0 +1,42 @@
+.container-profile-detail {
+    padding: 5%;
+}
+
+.container-profile-detail .img {
+    text-align: center;
+}
+
+.container-profile-detail .details {
+    border-left: 3px solid #ded4da;
+}
+
+.container-profile-detail .details p {
+    font-size: 15px;
+    font-weight: bold;
+}
+.container-profile-detail .img img {
+    width: 200px;
+    max-height: 250px;
+    min-height: 200px;
+    border-radius: 50%;
+}
+#DeleteSubmit {
+    display: inline;
+    border: none;
+    background-color: white;
+    color: #007bff;
+}
+#DeleteSubmit:hover{
+    color: #0056b3;
+}
+
+.container-profile-detail .buttonChanges {
+    display: flex;
+}
+.container-profile-detail .details span {
+    display: flex;
+    justify-content: space-between;
+}
+.container-profile-detail .details span i {
+    font-size: 2em;
+}

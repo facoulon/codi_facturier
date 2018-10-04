@@ -1,39 +1,8 @@
-{% load static %}
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-<link rel="stylesheet" href="{% static 'bootstrap/dist/css/bootstrap.min.css'%} ">
-<link rel="stylesheet" href="{% static 'css/style.css'%} ">
-    <title>Codi_Facturier</title>
-</head>
-<body>
-<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-<a class="navbar-brand" href="{% url 'index' %}"><img id="logo" src="{% static 'img/lapin.png' %}" alt=""></a>
-    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup"
-        aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
-    </button>
-    <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
-        <div class="navbar-nav">
-            <a class="nav-item nav-link active" href="{% url 'index' %}">Home <span class="sr-only">(current)</span></a>
-            <a class="nav-item nav-link" href="#">Features</a>
-            <a class="nav-item nav-link" href="#">Pricing</a>
-            <a class="nav-item nav-link" href="#">Disabled</a>
-        </div>
-    </div>
-    {% if not request.user.is_authenticated %}
-    <li class="nav-item">
-        <a class="nav-link" href="/login">Connection</a>
-    </li>
-    {% else %}
-        <p>Hello fmblrk</p>
-    <a class="nav-link" href="/logout">Deconnection</a>
-    {% endif %}
-</nav>
+{% extends "facturier/base.html" %}
     
+{% block content %}
+<h1>Index</h1>
+{% endblock content %}
 
 
 
@@ -48,9 +17,3 @@
 
 
 
-
-
-<script src="{% static 'jquery/dist/jquery.min.js' %}"></script>
-<script src="{% static 'bootstrap/dist/js/bootstrap.bundle.min.js' %}"></script>
-</body>
-</html>

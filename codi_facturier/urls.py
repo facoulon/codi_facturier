@@ -15,15 +15,22 @@ Including another URLconf
 """
 from django.conf.urls import url
 from django.contrib import admin
-from facturier.views import IndexView
+from django.conf import settings
+from django.conf.urls.static import static
+
+from facturier.views import IndexView, CustomerCreateView, CustomerList, CustomerDetail, CustomerUpdateView, CustomerDeleteView
 from django.contrib.auth import views as auth_views
 
 urlpatterns = [
-    url(r'^admin/', admin.site.urls),
+    url(r'^admin/', admin.site.urls,),
 
     url(r'^login/$', auth_views.LoginView.as_view(),  name='login'),
-    url(r'^logout/$', auth_views.LogoutView.as_view(next_page='/'),  name='logout'),
-    
+    url(r'^logout/$', auth_views.LogoutView.as_view(next_page='index'),  name='logout'),
+    url(r"^customer/create/$", CustomerCreateView.as_view(), name="customer-create"),
+    url(r"^customer/list/$", CustomerList.as_view(), name="customer-list"),
+    url(r"^customer/(?P<slug>[-\w]+)/detail$", CustomerDetail.as_view(), name="customer-detail"),
     url(r'^index/$', IndexView.as_view(), name='index'),
+    url(r"^customer/(?P<slug>[-\w]+)/edit$", CustomerUpdateView.as_view(), name="customer-edit"),
+    url(r"^customer/(?P<slug>[-\w]+)/delete$", CustomerDeleteView.as_view(), name="customer-delete"),
     
-]
+] + static (settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

@@ -2,23 +2,23 @@
 from __future__ import unicode_literals
 
 from django.contrib import admin
-from .models import Client, Produit, Devis, LigneDeCommande
+from .models import Customer, Product, Quotation, CommandLine
 # Register your models here.
 
-class ClientAdmin(admin.ModelAdmin):
-    list_display = ('nom','prenom', 'email', 'slug')
+class CustomerAdmin(admin.ModelAdmin):
+    list_display = ('lastname','firstname', 'email', 'slug', 'city', 'country' , 'cover')
 
-class ProduitAdmin(admin.ModelAdmin):
-    list_display = ('nom','short_description', 'description', 'slug', 'image', 'prix', 'stock')
+class ProductAdmin(admin.ModelAdmin):
+    list_display = ('name','short_description', 'description', 'slug', 'cover', 'price', 'stock')
 
-class LigneDeCommandeAdmin(admin.ModelAdmin):
-    list_display = ('devis','produit', 'quantite')
+class CommandLineAdmin(admin.ModelAdmin):
+    list_display = ('quotation','product', 'quantity')
 
-class DevisAdmin(admin.ModelAdmin):
-    list_display = ('client', 'date_de_creation_devis','date_de_modification','type', 'date_de_creation_facture', 'etat')
+class QuotationAdmin(admin.ModelAdmin):
+    list_display = ('customer', 'Quotation_creation_date','modified_date','type', 'Bill_creation_date', 'status')
 
 
-admin.site.register(Client, ClientAdmin)
-admin.site.register(Produit, ProduitAdmin)
-admin.site.register(LigneDeCommande, LigneDeCommandeAdmin)
-admin.site.register(Devis, DevisAdmin)
+admin.site.register(Customer, CustomerAdmin)
+admin.site.register(Product, ProductAdmin)
+admin.site.register(CommandLine, CommandLineAdmin)
+admin.site.register(Quotation, QuotationAdmin)

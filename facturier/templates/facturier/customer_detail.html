@@ -1,0 +1,53 @@
+{% extends "facturier/base.html" %}
+
+{% block content %}
+
+<div class="container-profile-detail">
+    <div class="row">
+        <div class="col-md-6 img">
+            {% if customer.cover.url != Null %}
+            <img class="profile-img img-fluid" src="{{customer.cover.url}}"
+                alt="" class="img-rounded">
+            {% else %}
+            <img class="profile-img img-fluid" alt="No Cover" class="img-rounded">
+            {% endif %}
+        </div>
+        <div class="col-md-6 details">
+            <blockquote>
+                <span>
+                    <h5>{{customer.lastname}} {{customer.firstname}}</h5>
+                    <div class="buttonChanges">
+                        <a href="{% url 'customer-edit' customer.slug %}"><i class="fas fa-edit"></i></a>
+
+                        <form id="deleteForm" action="{% url 'customer-delete' customer.slug %}" method="POST"> {% csrf_token %}
+                        <button id="DeleteSubmit" type="submit"><i class="fas fa-trash-alt"></i></button>
+                        </form>
+                    </div>
+                    </span>
+                <small><cite title="Source Title">{{customer.city}}, {{customer.country}} <i class="icon-map-marker"></i></cite></small>
+            </blockquote>
+            <p>
+                {{customer.email}} <br>
+            </p>
+        </div>
+    </div>
+</div>
+<script>
+    $(document).ready(function () {
+        $("#DeleteSubmit").click(function (event) {
+            if (confirm("Click OK to continue?")) {
+                $('#deleteForm').submit();
+            }
+        });
+    });
+//$(document).ready(function () {
+//    $("#DeleteSubmit").click(function (event) {
+//        e.preventDefault();
+//        var c = confirm("Click OK to continue?");
+//        if (c) {
+//            $('#deleteForm').submit();
+//        }
+//    });
+//});
+</script>
+{% endblock content %}

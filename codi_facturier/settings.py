@@ -131,3 +131,4 @@ os.path.join(BASE_DIR, "node_modules"),
 
 LOGIN_URL = "/login"
 LOGIN_OUT = "/logout"
+LOGIN_REDIRECT_URL = "index"
