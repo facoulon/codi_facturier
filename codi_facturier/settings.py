@@ -37,8 +37,9 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'django.contrib.gis',
+    
     'facturier',
+
 ]
 
 MIDDLEWARE = [
@@ -77,7 +78,7 @@ WSGI_APPLICATION = 'codi_facturier.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.contrib.gis.db.backends.postgis',
+        'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'codi_facturier',
         'USER': 'codi_facturier',
         'PASSWORD': 'plop48000',
@@ -107,7 +108,7 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/1.11/topics/i18n/
 
-LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = 'fr-fr'
 
 TIME_ZONE = 'UTC'
 
@@ -131,4 +132,5 @@ os.path.join(BASE_DIR, "node_modules"),
 
 LOGIN_URL = "/login"
 LOGIN_OUT = "/logout"
-LOGIN_REDIRECT_URL = "index"
+LOGIN_REDIRECT_URL = "/"
+

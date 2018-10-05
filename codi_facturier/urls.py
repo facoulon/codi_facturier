@@ -23,13 +23,14 @@ from django.contrib.auth import views as auth_views
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls,),
-
     url(r'^login/$', auth_views.LoginView.as_view(),  name='login'),
     url(r'^logout/$', auth_views.LogoutView.as_view(next_page='index'),  name='logout'),
+
+    url(r'^$', IndexView.as_view(), name='index'),
+    
     url(r"^customer/create/$", CustomerCreateView.as_view(), name="customer-create"),
     url(r"^customer/list/$", CustomerList.as_view(), name="customer-list"),
-    url(r"^customer/(?P<slug>[-\w]+)/detail$", CustomerDetail.as_view(), name="customer-detail"),
-    url(r'^index/$', IndexView.as_view(), name='index'),
+    url(r"^customer/(?P<slug>[-\w]+)/$", CustomerDetail.as_view(), name="customer-detail"),
     url(r"^customer/(?P<slug>[-\w]+)/edit$", CustomerUpdateView.as_view(), name="customer-edit"),
     url(r"^customer/(?P<slug>[-\w]+)/delete$", CustomerDeleteView.as_view(), name="customer-delete"),
     

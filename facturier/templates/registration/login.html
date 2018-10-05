@@ -1,10 +1,12 @@
 {% extends "facturier/base.html" %}
 
 {% block content %}
-
-<form action="" method="POST">{% csrf_token %}
-    
-    {{form.as_p}}
-    <button type="submit">Connection</button>
-</form>
+<div class="container loginpage">
+<form class="bg-dark formCustomer" action="" method="POST">{% csrf_token %}
+        
+        {{form.as_p}}
+        
+<button class="btn btn-outline-light"  type="submit">Connection</button>
+    </form>
+</div>
 {% endblock content %}
