@@ -20,7 +20,9 @@ from django.conf.urls.static import static
 
 from facturier.views import IndexView, CustomerCreateView, CustomerList, CustomerDetail, CustomerUpdateView, CustomerDeleteView
 
-from facturier.views import ProductCreateView, ProductDetailView
+from facturier.views import ProductCreateView, ProductDetailView, ProductUpdateView, ProductDeleteView, ProductListView
+
+from facturier.views import QuotationCreateView
 
 from django.contrib.auth import views as auth_views
 
@@ -30,14 +32,18 @@ urlpatterns = [
     url(r'^logout/$', auth_views.LogoutView.as_view(next_page='index'),  name='logout'),
 
     url(r'^$', IndexView.as_view(), name='index'),
-    
+
     url(r"^customer/create/$", CustomerCreateView.as_view(), name="customer-create"),
     url(r"^customer/list/$", CustomerList.as_view(), name="customer-list"),
     url(r"^customer/(?P<slug>[-\w]+)/$", CustomerDetail.as_view(), name="customer-detail"),
     url(r"^customer/(?P<slug>[-\w]+)/edit$", CustomerUpdateView.as_view(), name="customer-edit"),
     url(r"^customer/(?P<slug>[-\w]+)/delete$", CustomerDeleteView.as_view(), name="customer-delete"),
-    
-    url(r"^product/create/$", ProductCreateView.as_view(), name="product-create"),
-    url(r"^product/(?P<slug>[-\w]+)/$", ProductDetailView.as_view(), name="product-detail"),
 
+    url(r"^product/create/$", ProductCreateView.as_view(), name="product-create"),
+    url(r"^product/list/$", ProductListView.as_view(), name="product-list"),
+    url(r"^product/(?P<slug>[-\w]+)/$", ProductDetailView.as_view(), name="product-detail"),
+    url(r"^product/(?P<slug>[-\w]+)/edit$", ProductUpdateView.as_view(), name="product-edit"),
+    url(r"^product/(?P<slug>[-\w]+)/delete$", ProductDeleteView.as_view(), name="product-delete"),
+
+    url(r"^quotation/create/$", QuotationCreateView.as_view(), name="quotation-create"),
 ] + static (settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

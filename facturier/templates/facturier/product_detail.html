@@ -16,9 +16,9 @@
                 <span>
                     <h5>{{product.name}}</h5>
                     <div class="buttonChanges">
-                        {% comment %} <a href="{% url 'product-edit' customer.slug %}"><i class="fas fa-edit"></i></a> {% endcomment %}
+                        <a href="{% url 'product-edit' product.slug %}"><i class="fas fa-edit"></i></a>
 
-                        {% comment %} <form id="DeleteForm" action="{% url 'product-delete' product.slug %}" method="POST"> {% endcomment %}
+                        <form id="DeleteForm" action="{% url 'product-delete' product.slug %}" method="POST">
                             {%csrf_token %}
                             <button id="DeleteSubmit" type="button"><i class="fas fa-trash-alt"></i></button>
                         </form>

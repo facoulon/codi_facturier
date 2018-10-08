@@ -4,7 +4,11 @@
 
 <form class="bg-dark formCustomer" action="." method="post" enctype="multipart/form-data">{% csrf_token %}
     <div class="formDetail">
-        {{form.as_p}}
+    {{ form.as_p}}
+    {% for formset in inlines %}
+    {{ formset.as_p }}
+    {% endfor %}
+
     </div>
     <button class="btn btn-outline-light" type="submit">Submit</button>
 </form>

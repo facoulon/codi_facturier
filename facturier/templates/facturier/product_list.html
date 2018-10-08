@@ -1,0 +1,33 @@
+{% extends "facturier/base.html" %}
+
+{% block content %}
+
+<div class="container">
+    <div class="row">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th scope="col">ID</th>
+                    <th scope="col">Name</th>
+                    <th scope="col">Short description</th>
+                    <th scope="col">Price</th>
+                    <th scope="col">Detail Link</th>
+                </tr>
+            </thead>
+            <tbody>
+
+                {% for product in object_list %}
+                <tr>
+                    <th scope="row">{{product.id}}</th>
+                    <td>{{product.name}}</td>
+                    <td>{{product.short_description}}</td>
+                    <td>{{product.price}} $</td>
+                    <td><a href="{% url 'product-detail' product.slug %}">Link</a></td>
+                </tr>
+
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock content %}
