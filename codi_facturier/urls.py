@@ -19,6 +19,9 @@ from django.conf import settings
 from django.conf.urls.static import static
 
 from facturier.views import IndexView, CustomerCreateView, CustomerList, CustomerDetail, CustomerUpdateView, CustomerDeleteView
+
+from facturier.views import ProductCreateView, ProductDetailView
+
 from django.contrib.auth import views as auth_views
 
 urlpatterns = [
@@ -34,4 +37,7 @@ urlpatterns = [
     url(r"^customer/(?P<slug>[-\w]+)/edit$", CustomerUpdateView.as_view(), name="customer-edit"),
     url(r"^customer/(?P<slug>[-\w]+)/delete$", CustomerDeleteView.as_view(), name="customer-delete"),
     
+    url(r"^product/create/$", ProductCreateView.as_view(), name="product-create"),
+    url(r"^product/(?P<slug>[-\w]+)/$", ProductDetailView.as_view(), name="product-detail"),
+
 ] + static (settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

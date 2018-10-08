@@ -5,8 +5,8 @@
 <div class="container-profile-detail">
     <div class="row">
         <div class="col-md-6 img">
-            {% if customer.cover.url != none %}
-            <img class="profile-img img-fluid" src="{{customer.cover.url}}" alt="" class="img-rounded">
+            {% if product.cover.url != none %}
+            <img class="profile-img img-fluid" src="{{product.cover.url}}" alt="" class="img-rounded">
             {% else %}
             <img class="profile-img img-fluid" alt="No Cover" class="img-rounded">
             {% endif %}
@@ -14,20 +14,21 @@
         <div class="col-md-6 details">
             <blockquote>
                 <span>
-                    <h5>{{customer.last_name}} {{customer.first_name}}</h5>
+                    <h5>{{product.name}}</h5>
                     <div class="buttonChanges">
-                        <a href="{% url 'customer-edit' customer.slug %}"><i class="fas fa-edit"></i></a>
+                        {% comment %} <a href="{% url 'product-edit' customer.slug %}"><i class="fas fa-edit"></i></a> {% endcomment %}
 
-                        <form id="DeleteForm" action="{% url 'customer-delete' customer.slug %}" method="POST"> 
+                        {% comment %} <form id="DeleteForm" action="{% url 'product-delete' product.slug %}" method="POST"> {% endcomment %}
                             {%csrf_token %}
                             <button id="DeleteSubmit" type="button"><i class="fas fa-trash-alt"></i></button>
                         </form>
                     </div>
                 </span>
-                <small><cite title="Source Title">{{customer.city}}, {{customer.country}} <i class="icon-map-marker"></i></cite></small>
+                <small><cite title="Source Title">{{product.description}}<i class="icon-map-marker"></i></cite></small>
             </blockquote>
             <p>
-                {{customer.email}} <br>
+                {{product.price}}$<br>
+                Stock :{{product.stock}} <br>
             </p>
         </div>
     </div>

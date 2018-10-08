@@ -24,6 +24,15 @@ class CustomerList(ListView):
     model = Customer
     template_name='facturier/customer_list.html'
 
+    def get_queryset(self):
+        query = self.request.GET.get('q',None)
+
+        if query != None:
+            return Customer.objects.filter(last_name__icontains=query)
+            #filter
+        else:
+            return Customer.objects.all()
+
 class CustomerDetail(DetailView):
     model = Customer
 
@@ -39,3 +48,11 @@ class CustomerDeleteView(DeleteView):
     model = Customer
     success_url = '/'
     # template_name = ".html"
+
+class ProductCreateView(CreateView):
+    model = Product
+    fields = "__all__"
+    success_url = '/'
+
+class ProductDetailView(DetailView):
+    model = Product
