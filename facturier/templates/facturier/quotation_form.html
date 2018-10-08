@@ -3,14 +3,41 @@
 {% block content %}
 
 <form class="bg-dark formCustomer" action="." method="post" enctype="multipart/form-data">{% csrf_token %}
-    <div class="formDetail">
-    {{ form.as_p}}
+    <p>
+        <label for="">Customer :</label>
+        {{form.customer}} 
+    </p>
+    <p>
+        <label for="">Type :</label>
+        {{form.type}}
+    </p>
+    <p>
+        <label for="">Bill creation date :</label>
+        {{form.bill_creation_date}}
+    </p>
+    <p>
+        <label for="">Status :</label>
+        {{form.status}}
+    </p>
+    <br>
     {% for formset in inlines %}
-    {{ formset.as_p }}
+    {% for form in formset %}
+    <p class="line">
+        <label for="">Product :</label>
+        {{ form.product }}
+        <label for="">Quantity :</label>
+        {{ form.quantity }}
+    </p>
+    {{ formset.management_form }}
+        {% endfor %}
     {% endfor %}
-
-    </div>
-    <button class="btn btn-outline-light" type="submit">Submit</button>
+    <br>
+    <button id="btnQuotationForm" class="btn btn-outline-light" type="submit">Submit</button>
 </form>
 
+<script type="text/javascript">
+    $(function () {
+        $('.line').formset();
+    })
+</script>
 {% endblock content %}

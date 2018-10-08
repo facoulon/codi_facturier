@@ -1,0 +1,35 @@
+{% extends "facturier/base.html" %}
+
+{% block content %}
+
+<div class="container">
+    <div class="row">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th scope="col">ID</th>
+                    <th scope="col">Customer</th>
+                    <th scope="col">Quotation creation date</th>
+                    <th scope="col">type</th>
+                    <th scope="col">Status</th>
+                    <th scope="col">Quotation Detail Link</th>
+                </tr>
+            </thead>
+            <tbody>
+
+                {% for quotation in object_list %}
+                <tr>
+                    <th scope="row">{{quotation.id}}</th>
+                    <td>{{quotation.customer.last_name}} {{quotation.customer.first_name}}</td>
+                    <td>{{quotation.quotation_creation_date}}</td>
+                    <td>{{quotation.type}}</td>
+                    <td>{{quotation.status}}</td>
+                    
+                </tr>
+
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock content %}

@@ -26,7 +26,7 @@ TYPE_CHOICES = (
     ("BILL", "Bill"),
 )
 ETAT_CHOICES =(
-    ("PAIEMENT", "Paid"),
+    ("PAID", "Paid"),
     ("REVIVE", "Revive"),
     ("WAITING", "Waiting"),
 )
@@ -35,7 +35,7 @@ class Quotation(models.Model):
 
     quotation_creation_date = models.DateTimeField(auto_now_add=True)
     modified_date = models.DateTimeField(auto_now=True)
-    bill_creation_date = models.DateTimeField()
+    bill_creation_date = models.DateTimeField(blank=True, null=True)
     type = models.CharField(max_length=15, choices=TYPE_CHOICES, default="QUOTATION")
     status = models.CharField(max_length=15, choices=ETAT_CHOICES, default="WAITING")
 
@@ -57,4 +57,5 @@ class CommandLine(models.Model):
     quantity = models.IntegerField()
 
     product = models.ForeignKey(Product, on_delete=models.PROTECT)
-    quotation = models.ForeignKey(Quotation, on_delete=models.PROTECT)
+    quotation = models.ForeignKey(Quotation, on_delete=models.CASCADE)
+

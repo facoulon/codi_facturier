@@ -33,3 +33,33 @@ form p {
 }
 /* ///////////////////Customer Create//////////////////////////// */
 
+
+/* //////////////////////////// Quotation form //////////////////////////// */
+
+.add-row, .delete-row {
+    color: #212529;
+    background-color: #f8f9fa;
+    border-color: #f8f9fa;
+    display: inline-block;
+    font-weight: 400;
+    text-align: center;
+    padding: .375rem .75rem;
+    font-size: 1rem;
+    line-height: 1.5;
+    border-radius: .25rem;
+    white-space: nowrap;
+    vertical-align: middle;
+}
+.add-row:hover, .delete-row:hover {
+color: #f8f9fa;
+background-color: transparent;
+background-image: none;
+border-color: #f8f9fa;
+text-decoration: none;
+}
+
+#btnQuotationForm {
+    display: block;
+    margin: 0 auto;
+    margin-top: 1em;
+}

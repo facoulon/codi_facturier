@@ -10,6 +10,11 @@ from .models import Customer, Product, Quotation, CommandLine
 
 from extra_views import CreateWithInlinesView, InlineFormSet
 from extra_views.generic import GenericInlineFormSet
+
+from django.db.models.signals import post_save
+from django.db.models import Q
+
+
 # Create your views here.
 class IndexView(TemplateView):
     template_name = "facturier/index.html"
@@ -30,7 +35,8 @@ class CustomerList(ListView):
         query = self.request.GET.get('q',None)
 
         if query != None:
-            return Customer.objects.filter(last_name__icontains=query)
+            return Customer.objects.filter(Q(last_name__icontains=query)|Q(first_name__icontains=query))
+            
             #filter
         else:
             return Customer.objects.all()
@@ -91,8 +97,18 @@ class CommandLineInline(InlineFormSet):
 class QuotationCreateView(CreateWithInlinesView):
     model = Quotation
     inlines = [CommandLineInline,]
-    fields = "__all__"
+    fields = ("customer","type","status",)
     template_name = 'facturier/quotation_form.html'
+    success_url = '/'
 
-    def get_success_url(self):
-        return self.object.get_absolute_url()
+class QuotationListView(ListView):
+    model = Quotation
+
+    def get_queryset(self):
+        query = self.request.GET.get('q',None)
+        query
+        if query != None:
+            return Quotation.objects.filter(Q(customer__last_name__icontains=query)|Q(customer__first_name__icontains=query))
+            #filter
+        else:
+            return Quotation.objects.all()

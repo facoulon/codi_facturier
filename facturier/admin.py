@@ -16,7 +16,8 @@ class CommandLineInline(admin.StackedInline):
     model = CommandLine
 
 class QuotationAdmin(admin.ModelAdmin):
-    list_display = ('customer', 'quotation_creation_date','modified_date','type', 'bill_creation_date', 'status')
+    list_display = ('customer', 'type', 'status',)
+    readonly_fields = ("bill_creation_date",)
     inlines = [
         CommandLineInline,
     ]

@@ -22,7 +22,7 @@ from facturier.views import IndexView, CustomerCreateView, CustomerList, Custome
 
 from facturier.views import ProductCreateView, ProductDetailView, ProductUpdateView, ProductDeleteView, ProductListView
 
-from facturier.views import QuotationCreateView
+from facturier.views import QuotationCreateView, QuotationListView
 
 from django.contrib.auth import views as auth_views
 
@@ -46,4 +46,9 @@ urlpatterns = [
     url(r"^product/(?P<slug>[-\w]+)/delete$", ProductDeleteView.as_view(), name="product-delete"),
 
     url(r"^quotation/create/$", QuotationCreateView.as_view(), name="quotation-create"),
+    url(r"^quotation/list/$", QuotationListView.as_view(), name="quotation-list"),
+    
+
+
+
 ] + static (settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

@@ -13,6 +13,7 @@
         crossorigin="anonymous">
     <title>Codi_Facturier</title>
     <script src="{% static 'jquery/dist/jquery.min.js' %}"></script>
+    <script src="{% static 'js/jquery.formset.js' %}"></script>
 </head>
 
 <body>
@@ -34,7 +35,7 @@
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown"
                         aria-haspopup="true" aria-expanded="false">
-                        Customer
+                        Customers
                     </a>
                     <div class="dropdown-menu" aria-labelledby="navbarDropdown">
                         <a class="dropdown-item" href="{% url 'customer-create' %}">Create</a>
@@ -44,11 +45,21 @@
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true"
                         aria-expanded="false">
-                        Product
+                        Products
                     </a>
                     <div class="dropdown-menu" aria-labelledby="navbarDropdown">
                         <a class="dropdown-item" href="{% url 'product-create' %}">Create</a>
                          <a class="dropdown-item" href="{% url 'product-list' %}">List</a>
+                    </div>
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true"
+                        aria-expanded="false">
+                        Quotations
+                    </a>
+                    <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                        <a class="dropdown-item" href="{% url 'quotation-create' %}">Create</a>
+                        <a class="dropdown-item" href="{% url 'quotation-list' %}">List</a>
                     </div>
                 </li>
                 <a class="nav-item nav-link" href="/admin">Admin</a>

@@ -6,3 +6,6 @@ from django.apps import AppConfig
 
 class FacturierConfig(AppConfig):
     name = 'facturier'
+
+    def ready(self):
+        import facturier.signals
