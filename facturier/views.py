@@ -7,6 +7,7 @@ from django.views.generic import View, ListView, TemplateView, CreateView
 from django.views.generic import DetailView, UpdateView, DeleteView
 
 from .models import Customer, Product, Quotation, CommandLine
+from .models import ETAT_CHOICES
 
 from extra_views import CreateWithInlinesView, InlineFormSet
 from extra_views.generic import GenericInlineFormSet
@@ -36,7 +37,7 @@ class CustomerList(ListView):
 
         if query != None:
             return Customer.objects.filter(Q(last_name__icontains=query)|Q(first_name__icontains=query))
-            
+
             #filter
         else:
             return Customer.objects.all()
@@ -104,11 +105,24 @@ class QuotationCreateView(CreateWithInlinesView):
 class QuotationListView(ListView):
     model = Quotation
 
+    def get_context_data(self, **kwargs):
+        context = ListView.get_context_data(self, **kwargs)
+        context['status'] = ETAT_CHOICES
+        return context
+
+
     def get_queryset(self):
         query = self.request.GET.get('q',None)
-        query
+        query2 = self.request.GET.get('filter',None)
         if query != None:
-            return Quotation.objects.filter(Q(customer__last_name__icontains=query)|Q(customer__first_name__icontains=query))
+            if query2 != "":
+                return Quotation.objects.filter(Q(customer__last_name__icontains=query)|Q(customer__first_name__icontains=query), Q(status__icontains=query2))
+            else:
+                return Quotation.objects.filter(Q(customer__last_name__icontains=query)|Q(customer__first_name__icontains=query))
             #filter
         else:
             return Quotation.objects.all()
+
+
+class QuotationDetailView(DetailView):
+    model = Quotation

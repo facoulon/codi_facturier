@@ -22,7 +22,7 @@ from facturier.views import IndexView, CustomerCreateView, CustomerList, Custome
 
 from facturier.views import ProductCreateView, ProductDetailView, ProductUpdateView, ProductDeleteView, ProductListView
 
-from facturier.views import QuotationCreateView, QuotationListView
+from facturier.views import QuotationCreateView, QuotationListView, QuotationDetailView
 
 from django.contrib.auth import views as auth_views
 
@@ -47,7 +47,8 @@ urlpatterns = [
 
     url(r"^quotation/create/$", QuotationCreateView.as_view(), name="quotation-create"),
     url(r"^quotation/list/$", QuotationListView.as_view(), name="quotation-list"),
-    
+    url(r"^quotation/(?P<pk>[-\w]+)/$", QuotationDetailView.as_view(), name="quotation-detail"),
+
 
 
 

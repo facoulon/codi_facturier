@@ -1,0 +1,27 @@
+{% extends "facturier/base.html" %}
+{% load static %}
+{% block content %}
+<div class="container">
+    <div class="row">
+        <img src="{% static 'img/lapin.png' %}" alt="lapin">
+        <h1>Codi-Facturier</h1>
+    </div>
+
+    <div class="row">
+        <h4>{{quotation.customer.last_name}}</h4>
+        <h4>{{quotation.customer.first_name}}</h4>
+        <h4>{{quotation.customer.email}}</h4>
+        <h4>{{quotation.customer.city}}</h4>
+        <h4>{{quotation.customer.country}}</h4>
+    </div>
+
+    <h2>Devis n°{{quotation.id}}</h2>
+    <h3>{{quotation.quotation_creation_date}}</h3>
+
+
+
+    {% for line in quotation.commandline_set.all %}
+    {{line}}
+    {% endfor %}
+</div>
+{% endblock content %}

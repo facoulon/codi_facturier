@@ -24,12 +24,14 @@
                     <td>{{quotation.quotation_creation_date}}</td>
                     <td>{{quotation.type}}</td>
                     <td>{{quotation.status}}</td>
-                    
+
                 </tr>
 
                 {% endfor %}
             </tbody>
         </table>
     </div>
+    {% include "facturier/aside.html" %}
+    
 </div>
 {% endblock content %}
