@@ -6,10 +6,11 @@ from django.urls import reverse
 from django.views.generic import View, ListView, TemplateView, CreateView
 from django.views.generic import DetailView, UpdateView, DeleteView
 from django.http import HttpResponse
+from django.views.decorators.csrf import csrf_exempt
 
 from .models import Customer, Product, Quotation, CommandLine
 from .models import ETAT_CHOICES
-
+from django.utils.decorators import method_decorator
 from extra_views import CreateWithInlinesView, InlineFormSet
 from extra_views.generic import GenericInlineFormSet
 
@@ -126,12 +127,16 @@ class QuotationListView(ListView):
         else:
             return Quotation.objects.all()
 
-
+@method_decorator(csrf_exempt, name='dispatch')
 class QuotationDetailView(DetailView):
     model = Quotation
 
+
+@method_decorator(csrf_exempt, name='dispatch')
 class QuotationView(View):
 
-    def get(self, request):
-        #
-        return HttpResponse('result')
+    def post(self, request):
+
+
+
+        return HttpResponse({'success' : True})
