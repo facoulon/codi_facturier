@@ -5,12 +5,15 @@ from django.shortcuts import render
 from django.urls import reverse
 from django.views.generic import View, ListView, TemplateView, CreateView
 from django.views.generic import DetailView, UpdateView, DeleteView
+from django.http import HttpResponse
 
 from .models import Customer, Product, Quotation, CommandLine
 from .models import ETAT_CHOICES
 
 from extra_views import CreateWithInlinesView, InlineFormSet
 from extra_views.generic import GenericInlineFormSet
+
+from django.views import View
 
 from django.db.models.signals import post_save
 from django.db.models import Q
@@ -126,3 +129,9 @@ class QuotationListView(ListView):
 
 class QuotationDetailView(DetailView):
     model = Quotation
+
+class QuotationView(View):
+
+    def get(self, request):
+        #
+        return HttpResponse('result')

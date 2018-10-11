@@ -10,7 +10,8 @@
 
     <div class="row customer-info">
         <div>
-            <h5>{{quotation.customer.last_name}}</h5>
+            <h5><a href="#" id="last_name" data-type="text" data-pk="{{quotation.customer.id}}" data-url="{% url 'quotation-edit' quotation.id %}"  data-title="enter last_name"  >{{quotation.customer.last_name}}</a></h5>
+
             <h5>{{quotation.customer.first_name}}</h5>
             <h5>{{quotation.customer.email}}</h5>
             <h5>{{quotation.customer.city}}</h5>
@@ -22,10 +23,7 @@
             <h2>Devis n°{{quotation.id}}</h2>
             <h5>{{quotation.quotation_creation_date}}</h5>
         </div>
-            
-        
-        
-        
+
         {{line}}
 
         <div class="row">
@@ -68,6 +66,11 @@ for (i=0; i<$subtotal.length; i++){
 $total = $total.toString();
 $(".total").text($total+" $");
 });
+$.fn.editable.defaults.mode="inline";
+$('#last_name').editable();
+
+
+
 
 </script>
 {% endblock content %}
