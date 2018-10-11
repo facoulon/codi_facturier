@@ -1,27 +1,73 @@
 {% extends "facturier/base.html" %}
 {% load static %}
 {% block content %}
-<div class="container">
+
+<div class="container quotation">
     <div class="row">
         <img src="{% static 'img/lapin.png' %}" alt="lapin">
         <h1>Codi-Facturier</h1>
     </div>
 
-    <div class="row">
-        <h4>{{quotation.customer.last_name}}</h4>
-        <h4>{{quotation.customer.first_name}}</h4>
-        <h4>{{quotation.customer.email}}</h4>
-        <h4>{{quotation.customer.city}}</h4>
-        <h4>{{quotation.customer.country}}</h4>
+    <div class="row customer-info">
+        <div>
+            <h5>{{quotation.customer.last_name}}</h5>
+            <h5>{{quotation.customer.first_name}}</h5>
+            <h5>{{quotation.customer.email}}</h5>
+            <h5>{{quotation.customer.city}}</h5>
+            <h5>{{quotation.customer.country}}</h5>
+        </div>
     </div>
+    <div class="content">
+        <div class="title">
+            <h2>Devis n°{{quotation.id}}</h2>
+            <h5>{{quotation.quotation_creation_date}}</h5>
+        </div>
+            
+        
+        
+        
+        {{line}}
 
-    <h2>Devis n°{{quotation.id}}</h2>
-    <h3>{{quotation.quotation_creation_date}}</h3>
+        <div class="row">
+            <table class="table quotationLine">
+                <thead>
+                    <tr>
+                        <th scope="col">ID Product</th>
+                        <th scope="col">Name</th>
+                        <th scope="col">Quantity</th>
+                        <th scope="col">Unit Price</th>
+                        <th scope="col">Subtotal Price</th>
+                    </tr>
+                </thead>
+                <tbody>
 
-
-
-    {% for line in quotation.commandline_set.all %}
-    {{line}}
-    {% endfor %}
+                    {% for line in quotation.commandline_set.all %}
+                    <tr>
+                        <th scope="row">{{line.product.id}}</th>
+                        <td>{{line.product.name}}</td>
+                        <td>{{line.quantity}}</td>
+                        <td>{{line.product.price}} $</td>
+                        <td class="subtotal">{% widthratio line.product.price 1 line.quantity %} $</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            <h4 class="total-h">Total : <span class="total"> </span></h4>
+        </div>
+    </div>
 </div>
+<script>
+
+$( document ).ready(function() {
+    $cpt="";
+    $total=0;
+$subtotal = $(".subtotal");
+for (i=0; i<$subtotal.length; i++){
+    $total += parseInt($subtotal[i].innerHTML);
+};
+$total = $total.toString();
+$(".total").text($total+" $");
+});
+
+</script>
 {% endblock content %}
