@@ -22,9 +22,9 @@
                     <th scope="row">{{quotation.id}}</th>
                     <td>{{quotation.customer.last_name}} {{quotation.customer.first_name}}</td>
                     <td>{{quotation.quotation_creation_date}}</td>
-                    <td>{{quotation.type}}</td>
-                    <td>{{quotation.status}}</td>
-
+                    <td>{{quotation.get_type_display}}</td>
+                    <td>{{quotation.get_status_display}}</td>
+                    <td><a href="{% url "quotation-detail" quotation.id %}">Link</a></td>
                 </tr>
 
                 {% endfor %}

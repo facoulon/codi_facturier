@@ -17,14 +17,16 @@ from django.conf.urls import url
 from django.contrib import admin
 from django.conf import settings
 from django.conf.urls.static import static
+from django.contrib.auth import views as auth_views
 
 from facturier.views import IndexView, CustomerCreateView, CustomerList, CustomerDetail, CustomerUpdateView, CustomerDeleteView
 
 from facturier.views import ProductCreateView, ProductDetailView, ProductUpdateView, ProductDeleteView, ProductListView
 
-from facturier.views import QuotationCreateView, QuotationListView, QuotationDetailView, QuotationView
+from facturier.views import QuotationCreateView, QuotationListView, QuotationDetailView
 
-from django.contrib.auth import views as auth_views
+from facturier.views import UpdateCustomerLineView, UpdateCommandLineLineView
+
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls,),
@@ -48,7 +50,10 @@ urlpatterns = [
     url(r"^quotation/create/$", QuotationCreateView.as_view(), name="quotation-create"),
     url(r"^quotation/list/$", QuotationListView.as_view(), name="quotation-list"),
     url(r"^quotation/(?P<pk>[-\w]+)/$", QuotationDetailView.as_view(), name="quotation-detail"),
-    url(r"^quotation/edit$", QuotationView.as_view(), name="quotation-edit"),
+
+    # url(r"^quotation/update$", UpdateQuotationLineView.as_view(), name="quotation-update"),
+    url(r"^customer/update$", UpdateCustomerLineView.as_view(), name="customer-update"),
+    url(r"^commandline/update$", UpdateCommandLineLineView.as_view(), name="commandline-update"),
 
 
 

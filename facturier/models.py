@@ -28,7 +28,7 @@ TYPE_CHOICES = (
 ETAT_CHOICES =(
     ("PAID", "Paid"),
     ("REVIVE", "Revive"),
-    ("WAITING", "Waiting"),
+    ("WAITING", "En attente"),
 )
 class Quotation(models.Model):
 

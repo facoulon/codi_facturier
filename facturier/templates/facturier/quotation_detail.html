@@ -10,12 +10,30 @@
 
     <div class="row customer-info">
         <div>
-            <h5><a href="#" id="last_name" data-type="text" data-pk="{{quotation.customer.id}}" data-url="{% url 'quotation-edit' %}"  data-title="enter last_name"  >{{quotation.customer.last_name}}</a></h5>
+            <h5><a 
+                href="#" 
+                id="last_name" 
+                data-type="text" 
+                data-pk="{{quotation.customer.id}}" 
+                data-url="{% url 'customer-update' %}"  
+                data-title="enter last_name">
+                {{quotation.customer.last_name}}</a></h5>
 
-            <h5>{{quotation.customer.first_name}}</h5>
-            <h5>{{quotation.customer.email}}</h5>
-            <h5>{{quotation.customer.city}}</h5>
-            <h5>{{quotation.customer.country}}</h5>
+            <h5><a href="#" id="first_name" data-type="text" data-pk="{{quotation.customer.id}}" data-url="{% url 'customer-update' %}"
+            data-title="enter first_name">{{quotation.customer.first_name}}    </a></h5>
+
+            <h5><a href="#" id="email" data-type="text" data-pk="{{quotation.customer.id}}" data-url="{% url 'customer-update' %}"
+            data-title="enter email">{{quotation.customer.email}}
+            </a></h5>
+
+            <h5><a href="#" id="city" data-type="text" data-pk="{{quotation.customer.id}}" data-url="{% url 'customer-update' %}"
+            data-title="enter city">{{quotation.customer.city}}
+            </a></h5>
+
+            <h5><a href="#" id="country" data-type="text" data-pk="{{quotation.customer.id}}" data-url="{% url 'customer-update' %}"
+            data-title="enter country">{{quotation.customer.country}}
+            </a></h5>
+            
         </div>
     </div>
     <div class="content">
@@ -23,8 +41,6 @@
             <h2>Devis n°{{quotation.id}}</h2>
             <h5>{{quotation.quotation_creation_date}}</h5>
         </div>
-
-        {{line}}
 
         <div class="row">
             <table class="table quotationLine">
@@ -40,37 +56,61 @@
                 <tbody>
 
                     {% for line in quotation.commandline_set.all %}
-                    <tr>
-                        <th scope="row">{{line.product.id}}</th>
-                        <td>{{line.product.name}}</td>
-                        <td>{{line.quantity}}</td>
-                        <td>{{line.product.price}} $</td>
-                        <td class="subtotal">{% widthratio line.product.price 1 line.quantity %} $</td>
-                    </tr>
+                        <tr>
+                            <th scope="row">{{line.product.id}}</th>
+                            <td>{{line.product.name}}</a></td>
+                            <td><a href="#" class="quantity" data-type="text" data-pk="{{line.commandline.id}}" data-url="{% url 'commandline-update' %}"
+                                    data-title="enter quantity">{{line.quantity}}
+                                </a></td>
+                            <td>{{line.product.price}} $</td>
+                            <td class="subtotal">{% widthratio line.product.price 1 line.quantity %} $</td>
+                        </tr>
                     {% endfor %}
                 </tbody>
             </table>
             <h4 class="total-h">Total : <span class="total"> </span></h4>
+            {% for product in product %}
+            
+            <input class="product-list" type="text" value="{{product.name}}" hidden>
+            {% endfor %}
         </div>
     </div>
 </div>
-<script>
 
-$( document ).ready(function() {
-    $cpt="";
-    $total=0;
-$subtotal = $(".subtotal");
-for (i=0; i<$subtotal.length; i++){
-    $total += parseInt($subtotal[i].innerHTML);
-};
-$total = $total.toString();
-$(".total").text($total+" $");
-});
-$.fn.editable.defaults.mode="inline";
-$('#last_name').editable();
-
-
-
-
-</script>
 {% endblock content %}
+
+{% block extra_script %}
+<script>
+    $(document).ready(function () {
+
+        $cpt = "";
+        $total = 0;
+        $subtotal = $(".subtotal");
+        for (i = 0; i < $subtotal.length; i++) {
+            $total += parseInt($subtotal[i].innerHTML);
+        };
+        $total = $total.toString();
+        $(".total").text($total + " $");
+
+
+        $.fn.editable.defaults.mode = "inline";
+
+        $('#last_name').editable();
+        $('#first_name').editable();
+        $('#email').editable();
+        $('#city').editable();
+        $('#country').editable();
+        $('.quantity').editable();
+
+        $name = "";
+        $name_list = [];
+        $product_list = $(".product-list");
+        for (i = 0; i < $product_list.length; i++) {
+            $name += "{value : " + $product_list[i].value + ", text:" + $product_list[i].value + "},";
+            $name_list.push($name);
+            $name = "";
+        }
+        console.log($name_list);
+    });
+</script>
+{% endblock extra_script %}

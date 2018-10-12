@@ -1,7 +1,35 @@
-{% include "facturier/header.html" %}
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
 
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="{% static 'bootstrap/dist/css/bootstrap.min.css'%} ">
+    <link rel="stylesheet" href="{% static 'css/style.css'%} ">
+    <link rel="stylesheet" href="{% static 'css/styleProfile.css'%} ">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css" integrity="sha384-mzrmE5qonljUremFsqc01SB46JvROS7bZs3IO2EmfFsd15uHvIt+Y8vEf7N7fWAU"
+        crossorigin="anonymous">
+    <link rel="stylesheet" href="{% static 'jquery-editable/css/jquery-editable.css'%}">
+    <title>Codi_Facturier</title>
+</head>
+
+<body>
+    {% include "facturier/header.html" %}
+    
     {% block content %}
-
+    
     {% endblock content %}
+    
+    {% include "facturier/footer.html" %}
+    <script src="{% static 'jquery/dist/jquery.min.js' %}"></script>
+    <script src="{% static 'js/jquery.formset.js' %}"></script>
+    <script src="{% static 'jquery-editable/js/jquery-editable-poshytip.min.js' %}"></script>
+    <script src="{% static 'bootstrap/dist/js/bootstrap.bundle.min.js' %}"></script>
+    {% block extra_script %}
+    
+    {% endblock extra_script %}
+</body>
 
-{% include "facturier/footer.html" %}
+</html>

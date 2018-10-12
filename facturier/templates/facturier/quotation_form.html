@@ -35,9 +35,14 @@
     <button id="btnQuotationForm" class="btn btn-outline-light" type="submit">Submit</button>
 </form>
 
+{% endblock content %}
+
+{% block extra_script %}
+
 <script type="text/javascript">
     $(function () {
         $('.line').formset();
     })
 </script>
-{% endblock content %}
+
+{% endblock extra_script %}

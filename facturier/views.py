@@ -41,8 +41,6 @@ class CustomerList(ListView):
 
         if query != None:
             return Customer.objects.filter(Q(last_name__icontains=query)|Q(first_name__icontains=query))
-
-            #filter
         else:
             return Customer.objects.all()
 
@@ -131,12 +129,28 @@ class QuotationListView(ListView):
 class QuotationDetailView(DetailView):
     model = Quotation
 
+    def get_context_data(self, **kwargs):
+        context = DetailView.get_context_data(self, **kwargs)
+        context['product'] = Product.objects.all()
+        print context
+        return context
+
 
 @method_decorator(csrf_exempt, name='dispatch')
-class QuotationView(View):
+class UpdateCustomerLineView(View):
 
     def post(self, request):
-
-
-
+        customer = Customer.objects.get(pk = request.POST.get("pk"))
+        setattr(customer,request.POST.get("name"),request.POST.get("value"))
+        customer.save()
         return HttpResponse({'success' : True})
+
+@method_decorator(csrf_exempt, name='dispatch')
+class UpdateCommandLineLineView(View):
+
+    def post(self, request):
+        commandline = CommandLine.objects.get(pk = request.POST.get("pk"))
+        setattr(commandline,request.POST.get("name"),request.POST.get("value"))
+        commandline.save()
+        return HttpResponse({'success' : True})
+    
