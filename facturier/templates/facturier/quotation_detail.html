@@ -59,8 +59,7 @@
                         <tr>
                             <th scope="row">{{line.product.id}}</th>
                             <td>{{line.product.name}}</a></td>
-                            <td><a href="#" class="quantity" data-type="text" data-pk="{{line.commandline.id}}" data-url="{% url 'commandline-update' %}"
-                                    data-title="enter quantity">{{line.quantity}}
+                            <td><a href="#" data-name="quantity" data-type="text" data-pk="{{line.id}}" data-url="{% url 'commandline-update' %}" data-title="enter quantity">{{line.quantity}}
                                 </a></td>
                             <td>{{line.product.price}} $</td>
                             <td class="subtotal">{% widthratio line.product.price 1 line.quantity %} $</td>
@@ -100,7 +99,7 @@
         $('#email').editable();
         $('#city').editable();
         $('#country').editable();
-        $('.quantity').editable();
+        $('a[data-name=quantity]').editable();
 
         $name = "";
         $name_list = [];

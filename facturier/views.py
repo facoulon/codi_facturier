@@ -132,7 +132,6 @@ class QuotationDetailView(DetailView):
     def get_context_data(self, **kwargs):
         context = DetailView.get_context_data(self, **kwargs)
         context['product'] = Product.objects.all()
-        print context
         return context
 
 
