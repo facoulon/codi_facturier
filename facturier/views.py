@@ -18,7 +18,8 @@ from django.views import View
 
 from django.db.models.signals import post_save
 from django.db.models import Q
-
+from django import template
+register = template.Library()
 
 # Create your views here.
 class IndexView(TemplateView):
@@ -134,7 +135,6 @@ class QuotationDetailView(DetailView):
         context['product'] = Product.objects.all()
         return context
 
-
 @method_decorator(csrf_exempt, name='dispatch')
 class UpdateCustomerLineView(View):
 
@@ -153,3 +153,11 @@ class UpdateCommandLineLineView(View):
         commandline.save()
         return HttpResponse({'success' : True})
     
+
+@method_decorator(csrf_exempt, name='dispatch')
+class DeleteCommandLineLineView(View):
+
+    def post(self, request):
+        commandline = CommandLine.objects.get(pk = request.POST.get("pk"))
+        commandline.delete()
+        return HttpResponse({'success' : True})

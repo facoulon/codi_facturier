@@ -1,5 +1,9 @@
 {% extends "facturier/base.html" %}
 {% load static %}
+
+{% load multiply %}
+
+
 {% block content %}
 
 <div class="container quotation">
@@ -51,6 +55,7 @@
                         <th scope="col">Quantity</th>
                         <th scope="col">Unit Price</th>
                         <th scope="col">Subtotal Price</th>
+                        <th scope="col"></th>
                     </tr>
                 </thead>
                 <tbody>
@@ -61,8 +66,9 @@
                             <td>{{line.product.name}}</a></td>
                             <td><a href="#" data-name="quantity" data-type="text" data-pk="{{line.id}}" data-url="{% url 'commandline-update' %}" data-title="enter quantity">{{line.quantity}}
                                 </a></td>
-                            <td>{{line.product.price}} $</td>
-                            <td class="subtotal">{% widthratio line.product.price 1 line.quantity %} $</td>
+                            <td class="unitPrice">{{line.product.price}} $</td>
+                            <td class="subtotal">{% multiply line.product.price line.quantity %} $</td>
+                            <td><button id="{{line.id}}" class="btn btn-outline-secondary delete">Delete Line</button></td>
                         </tr>
                     {% endfor %}
                 </tbody>
@@ -80,26 +86,49 @@
 
 {% block extra_script %}
 <script>
-    $(document).ready(function () {
+$(document).ready(function () {
 
-        $cpt = "";
-        $total = 0;
-        $subtotal = $(".subtotal");
-        for (i = 0; i < $subtotal.length; i++) {
-            $total += parseInt($subtotal[i].innerHTML);
-        };
-        $total = $total.toString();
-        $(".total").text($total + " $");
+function MathTotal() {
+    $cpt = "";
+    $total = 0;
+    $subtotal = $(".subtotal");
+    for (i = 0; i < $subtotal.length; i++) {
+        $total += parseFloat($subtotal[i].innerHTML);
+    };
+    $total = $total.toString();
+    $(".total").text($total + " $");
+}
+  
+MathTotal();
 
+    $.fn.editable.defaults.mode = "inline";
 
-        $.fn.editable.defaults.mode = "inline";
+    $('#last_name').editable();
+    $('#first_name').editable();
+    $('#email').editable();
+    $('#city').editable();
+    $('#country').editable();
+    $('a[data-name=quantity]').editable();
 
-        $('#last_name').editable();
-        $('#first_name').editable();
-        $('#email').editable();
-        $('#city').editable();
-        $('#country').editable();
-        $('a[data-name=quantity]').editable();
+    $('.editable-click').click(function(){
+        $('button.editable-submit').click(function(){
+            $parentQuantity = $(this).closest(".control-group");
+            $quantity = $parentQuantity.find("input").val();
+
+            $parentUnitPrice = $(this).closest("tr");
+            $unitPrice = $parentUnitPrice.find(".unitPrice").html();
+            $unitPrice = $unitPrice.replace(",",".");
+            
+            $subtot = parseFloat($unitPrice)*$quantity
+
+            $parentSubtotal = $(this).closest("tr")
+            $subtotalTd = $parentSubtotal.find(".subtotal");
+            $subtotalTd.text($subtot+ " $")
+            MathTotal();
+            
+        });
+    });
+
 
         $name = "";
         $name_list = [];
@@ -109,7 +138,24 @@
             $name_list.push($name);
             $name = "";
         }
-        console.log($name_list);
+
+
+    $(".delete").click(function(){
+$tr = $(this).closest("tr");
+$.ajax({
+    url: "{% url 'commandline-delete' %}",
+    type : 'POST'  ,
+    data : 'pk=' + this.id,
+    success : function(statue){
+        console.log("success");
+        $tr.remove();
+        MathTotal();
+        },
+    error : function(resultat, statut, erreur){
+        alert("Requete AJAX failed");
+        },
+        }); 
     });
+});
 </script>
 {% endblock extra_script %}
