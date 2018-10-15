@@ -14,29 +14,11 @@
 
     <div class="row customer-info">
         <div>
-            <h5><a
-                href="#"
-                id="last_name"
-                data-type="text"
-                data-pk="{{quotation.customer.id}}"
-                data-url="{% url 'customer-update' %}"
-                data-title="enter last_name">
-                {{quotation.customer.last_name}}</a></h5>
-
-            <h5><a href="#" id="first_name" data-type="text" data-pk="{{quotation.customer.id}}" data-url="{% url 'customer-update' %}"
-            data-title="enter first_name">{{quotation.customer.first_name}}    </a></h5>
-
-            <h5><a href="#" id="email" data-type="text" data-pk="{{quotation.customer.id}}" data-url="{% url 'customer-update' %}"
-            data-title="enter email">{{quotation.customer.email}}
-            </a></h5>
-
-            <h5><a href="#" id="city" data-type="text" data-pk="{{quotation.customer.id}}" data-url="{% url 'customer-update' %}"
-            data-title="enter city">{{quotation.customer.city}}
-            </a></h5>
-
-            <h5><a href="#" id="country" data-type="text" data-pk="{{quotation.customer.id}}" data-url="{% url 'customer-update' %}"
-            data-title="enter country">{{quotation.customer.country}}
-            </a></h5>
+            <h5>{{quotation.customer.last_name}}</h5>
+            <h5>{{quotation.customer.first_name}}</h5>
+            <h5>{{quotation.customer.email}}</h5>
+            <h5>{{quotation.customer.city}}</h5>
+            <h5>{{quotation.customer.country}}</h5>
 
         </div>
     </div>
@@ -104,11 +86,11 @@ MathTotal();
 
     $.fn.editable.defaults.mode = "inline";
 
-    $('#last_name').editable();
-    $('#first_name').editable();
-    $('#email').editable();
-    $('#city').editable();
-    $('#country').editable();
+    // $('#last_name').editable();
+    // $('#first_name').editable();
+    // $('#email').editable();
+    // $('#city').editable();
+    // $('#country').editable();
     $('a[data-name=quantity]').editable();
 
     $('.editable-click').click(function(){
@@ -124,7 +106,7 @@ MathTotal();
 
             $parentSubtotal = $(this).closest("tr")
             $subtotalTd = $parentSubtotal.find(".subtotal");
-            $subtotalTd.text($subtot+ " $")
+            $subtotalTd.text($subtot + " $")
             MathTotal();
 
         });
