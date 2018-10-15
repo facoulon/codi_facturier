@@ -8,6 +8,8 @@ from django.views.generic import DetailView, UpdateView, DeleteView
 from django.http import HttpResponse
 from django.views.decorators.csrf import csrf_exempt
 
+from django.conf import settings
+
 from .models import Customer, Product, Quotation, CommandLine
 from .models import ETAT_CHOICES
 from django.utils.decorators import method_decorator
@@ -15,6 +17,8 @@ from extra_views import CreateWithInlinesView, InlineFormSet
 from extra_views.generic import GenericInlineFormSet
 
 from django.views import View
+
+from django_weasyprint import WeasyTemplateResponseMixin
 
 from django.db.models.signals import post_save
 from django.db.models import Q
@@ -152,7 +156,7 @@ class UpdateCommandLineLineView(View):
         setattr(commandline,request.POST.get("name"),request.POST.get("value"))
         commandline.save()
         return HttpResponse({'success' : True})
-    
+
 
 @method_decorator(csrf_exempt, name='dispatch')
 class DeleteCommandLineLineView(View):
@@ -161,3 +165,9 @@ class DeleteCommandLineLineView(View):
         commandline = CommandLine.objects.get(pk = request.POST.get("pk"))
         commandline.delete()
         return HttpResponse({'success' : True})
+
+
+class QuotationDetailPrintView(WeasyTemplateResponseMixin, QuotationDetailView):
+    pdf_stylesheets = [
+        "facturier/static/css/style.css",
+    ]

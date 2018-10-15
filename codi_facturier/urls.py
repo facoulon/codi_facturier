@@ -25,7 +25,7 @@ from facturier.views import ProductCreateView, ProductDetailView, ProductUpdateV
 
 from facturier.views import QuotationCreateView, QuotationListView, QuotationDetailView
 
-from facturier.views import UpdateCustomerLineView, UpdateCommandLineLineView, DeleteCommandLineLineView
+from facturier.views import UpdateCustomerLineView, UpdateCommandLineLineView, DeleteCommandLineLineView, QuotationDetailPrintView
 
 
 urlpatterns = [
@@ -55,6 +55,6 @@ urlpatterns = [
     url(r"^customer/update$", UpdateCustomerLineView.as_view(), name="customer-update"),
     url(r"^commandline/update$", UpdateCommandLineLineView.as_view(), name="commandline-update"),
     url(r"^commandline/delete$", DeleteCommandLineLineView.as_view(), name="commandline-delete"),
-
+    url(r"^quotation/(?P<pk>[-\w]+)/pdf$", QuotationDetailPrintView.as_view(), name="quotation-pdf"),
 
 ] + static (settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

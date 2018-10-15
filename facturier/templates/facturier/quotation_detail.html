@@ -14,12 +14,12 @@
 
     <div class="row customer-info">
         <div>
-            <h5><a 
-                href="#" 
-                id="last_name" 
-                data-type="text" 
-                data-pk="{{quotation.customer.id}}" 
-                data-url="{% url 'customer-update' %}"  
+            <h5><a
+                href="#"
+                id="last_name"
+                data-type="text"
+                data-pk="{{quotation.customer.id}}"
+                data-url="{% url 'customer-update' %}"
                 data-title="enter last_name">
                 {{quotation.customer.last_name}}</a></h5>
 
@@ -37,7 +37,7 @@
             <h5><a href="#" id="country" data-type="text" data-pk="{{quotation.customer.id}}" data-url="{% url 'customer-update' %}"
             data-title="enter country">{{quotation.customer.country}}
             </a></h5>
-            
+
         </div>
     </div>
     <div class="content">
@@ -75,9 +75,10 @@
             </table>
             <h4 class="total-h">Total : <span class="total"> </span></h4>
             {% for product in product %}
-            
+
             <input class="product-list" type="text" value="{{product.name}}" hidden>
             {% endfor %}
+            <a  href="{% url "quotation-pdf" quotation.id %}">salut</a>
         </div>
     </div>
 </div>
@@ -98,7 +99,7 @@ function MathTotal() {
     $total = $total.toString();
     $(".total").text($total + " $");
 }
-  
+
 MathTotal();
 
     $.fn.editable.defaults.mode = "inline";
@@ -118,14 +119,14 @@ MathTotal();
             $parentUnitPrice = $(this).closest("tr");
             $unitPrice = $parentUnitPrice.find(".unitPrice").html();
             $unitPrice = $unitPrice.replace(",",".");
-            
+
             $subtot = parseFloat($unitPrice)*$quantity
 
             $parentSubtotal = $(this).closest("tr")
             $subtotalTd = $parentSubtotal.find(".subtotal");
             $subtotalTd.text($subtot+ " $")
             MathTotal();
-            
+
         });
     });
 
@@ -154,7 +155,7 @@ $.ajax({
     error : function(resultat, statut, erreur){
         alert("Requete AJAX failed");
         },
-        }); 
+        });
     });
 });
 </script>
