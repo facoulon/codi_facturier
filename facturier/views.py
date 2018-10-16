@@ -123,12 +123,12 @@ class QuotationListView(ListView):
         query2 = self.request.GET.get('filter',None)
         if query != None:
             if query2 != "":
-                return Quotation.objects.filter(Q(customer__last_name__icontains=query)|Q(customer__first_name__icontains=query), Q(status__icontains=query2))
+                return Quotation.objects.filter(Q(customer__last_name__icontains=query)|Q(customer__first_name__icontains=query), Q(status__icontains=query2), Q(type="QUOTATION"))
             else:
-                return Quotation.objects.filter(Q(customer__last_name__icontains=query)|Q(customer__first_name__icontains=query))
+                return Quotation.objects.filter(Q(customer__last_name__icontains=query)|Q(customer__first_name__icontains=query), Q(type="QUOTATION"))
             #filter
         else:
-            return Quotation.objects.all()
+            return Quotation.objects.filter(type="QUOTATION")
 
 @method_decorator(csrf_exempt, name='dispatch')
 class QuotationDetailView(DetailView):
@@ -136,7 +136,7 @@ class QuotationDetailView(DetailView):
 
     def get_context_data(self, **kwargs):
         context = DetailView.get_context_data(self, **kwargs)
-        context['product'] = Product.objects.all()
+        context['products'] = Product.objects.all()
         return context
 
 @method_decorator(csrf_exempt, name='dispatch')
@@ -171,3 +171,26 @@ class QuotationDetailPrintView(WeasyTemplateResponseMixin, QuotationDetailView):
     pdf_stylesheets = [
         "facturier/static/css/style.css",
     ]
+
+@method_decorator(csrf_exempt, name='dispatch')
+class QuotationAddNewLineView(View):
+    def post(self, request):
+        quotation = Quotation.objects.get(id=request.POST.get("quotation-pk"))
+        product = Product.objects.get(id=request.POST.get("id-product"))
+        quantity = int(request.POST.get('quantity'))
+        # try:
+        #     object =  CommandLine.objects.get(quotation = quotation, product = product)
+        #     object.quantity += quantity
+        #     object.save()
+        #
+        #
+        # except CommandLine.DoesNotExist:
+        #     object = CommandLine.objects.create(product = product, quantity = quantity, quotation=quotation)
+
+        command_line, created = CommandLine.objects.get_or_create(product = product, quotation=quotation)
+        if created == True:
+            command_line.quantity += quantity
+        else:
+            command_line.quantity = quantity
+
+        return HttpResponse({'success' : True})

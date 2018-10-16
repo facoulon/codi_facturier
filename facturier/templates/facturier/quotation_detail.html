@@ -24,7 +24,7 @@
     </div>
     <div class="content">
         <div class="title">
-            <h2>Devis n°{{quotation.id}}</h2>
+            <h2>{{quotation.get_type_display}} n°{{quotation.id}}</h2>
             <h5>{{quotation.quotation_creation_date}}</h5>
         </div>
 
@@ -53,17 +53,34 @@
                             <td><button id="{{line.id}}" class="btn btn-outline-secondary delete">Delete Line</button></td>
                         </tr>
                     {% endfor %}
+                    <tr>
+                        <th scope="row"></th>
+                        <td> <select class="selectAddProduct" name="">
+                        <option selected="selected">Choose Product</option>
+                        {% for product in products %}
+                        <option value="{{product.id}}">{{product.name}}</option>
+                        {% endfor %}
+                        </select> </td>
+                        <td> <input id="addQuantityNewLine" type="number" name="quantity" value=""> </td>
+                        <td ></td>
+                        <td></td>
+                        <td><button id="addLine" class="btn btn-outline-secondary add">Add Line</button></td>
+                    </tr>
                 </tbody>
             </table>
             <h4 class="total-h">Total : <span class="total"> </span></h4>
-            {% for product in product %}
+            {% for product in products %}
 
             <input class="product-list" type="text" value="{{product.name}}" hidden>
             {% endfor %}
             <a  href="{% url "quotation-pdf" quotation.id %}">salut</a>
+
+
+
         </div>
     </div>
 </div>
+
 
 {% endblock content %}
 
@@ -124,20 +141,40 @@ MathTotal();
 
 
     $(".delete").click(function(){
-$tr = $(this).closest("tr");
-$.ajax({
-    url: "{% url 'commandline-delete' %}",
-    type : 'POST'  ,
-    data : 'pk=' + this.id,
-    success : function(statue){
-        console.log("success");
-        $tr.remove();
-        MathTotal();
-        },
-    error : function(resultat, statut, erreur){
-        alert("Requete AJAX failed");
-        },
+        $tr = $(this).closest("tr");
+        $.ajax({
+            url: "{% url 'commandline-delete' %}",
+            type : 'POST'  ,
+            data : 'pk=' + this.id,
+            success : function(statue){
+                console.log("success");
+                $tr.remove();
+                MathTotal();
+                },
+            error : function(resultat, statut, erreur){
+                alert("Requete AJAX failed");
+                },
+                });
+    });
+
+    $("#addLine").click(function(){
+        $addProduct = $(".selectAddProduct").val();
+        $addQuantity = $("#addQuantityNewLine").val();
+        $idQuotation = {{quotation.id}}
+        $.ajax({
+            url: "{% url 'quotation-addline'%}",
+            type : 'POST',
+            data : 'quotation-pk=' + $idQuotation + '&id-product=' + $addProduct + '&quantity=' + $addQuantity,
+            success : function(statue){
+                console.log("success");
+
+                MathTotal();
+                },
+            error : function(resultat, statut, erreur){
+                alert("Request AJAX failed");
+                },
         });
+
     });
 });
 </script>

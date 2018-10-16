@@ -23,7 +23,7 @@ from facturier.views import IndexView, CustomerCreateView, CustomerList, Custome
 
 from facturier.views import ProductCreateView, ProductDetailView, ProductUpdateView, ProductDeleteView, ProductListView
 
-from facturier.views import QuotationCreateView, QuotationListView, QuotationDetailView
+from facturier.views import QuotationCreateView, QuotationListView, QuotationDetailView, QuotationAddNewLineView
 
 from facturier.views import UpdateCustomerLineView, UpdateCommandLineLineView, DeleteCommandLineLineView, QuotationDetailPrintView
 
@@ -51,10 +51,11 @@ urlpatterns = [
     url(r"^quotation/list/$", QuotationListView.as_view(), name="quotation-list"),
     url(r"^quotation/(?P<pk>[-\w]+)/$", QuotationDetailView.as_view(), name="quotation-detail"),
 
+
     # url(r"^quotation/update$", UpdateQuotationLineView.as_view(), name="quotation-update"),
     url(r"^customer/update$", UpdateCustomerLineView.as_view(), name="customer-update"),
     url(r"^commandline/update$", UpdateCommandLineLineView.as_view(), name="commandline-update"),
     url(r"^commandline/delete$", DeleteCommandLineLineView.as_view(), name="commandline-delete"),
     url(r"^quotation/(?P<pk>[-\w]+)/pdf$", QuotationDetailPrintView.as_view(), name="quotation-pdf"),
-
+    url(r"^quotation/addline$", QuotationAddNewLineView.as_view(), name="quotation-addline"),
 ] + static (settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

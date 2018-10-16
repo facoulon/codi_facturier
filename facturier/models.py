@@ -8,7 +8,7 @@ from autoslug import AutoSlugField
 
 class Customer(models.Model):
     first_name = models.CharField(max_length=30)
-    last_name = models.CharField(max_length=30) 
+    last_name = models.CharField(max_length=30)
     slug = AutoSlugField(populate_from='full_name', unique=True, always_update=True)
     email = models.EmailField()
     country = models.CharField(max_length=30, null=True, blank=True)
@@ -54,8 +54,7 @@ class Product(models.Model):
         return self.name
 
 class CommandLine(models.Model):
-    quantity = models.IntegerField()
+    quantity = models.IntegerField(default=0)
 
     product = models.ForeignKey(Product, on_delete=models.PROTECT)
     quotation = models.ForeignKey(Quotation, on_delete=models.CASCADE)
-
