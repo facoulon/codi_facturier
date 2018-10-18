@@ -5,7 +5,7 @@ from django.shortcuts import render
 from django.urls import reverse
 from django.views.generic import View, ListView, TemplateView, CreateView
 from django.views.generic import DetailView, UpdateView, DeleteView
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 
 from django.conf import settings
@@ -136,7 +136,7 @@ class QuotationDetailView(DetailView):
 
     def get_context_data(self, **kwargs):
         context = DetailView.get_context_data(self, **kwargs)
-        context['products'] = Product.objects.all()
+        context['products'] = Product.objects.all().order_by('name')
         return context
 
 @method_decorator(csrf_exempt, name='dispatch')
@@ -182,15 +182,27 @@ class QuotationAddNewLineView(View):
         #     object =  CommandLine.objects.get(quotation = quotation, product = product)
         #     object.quantity += quantity
         #     object.save()
-        #
-        #
+        
+        
         # except CommandLine.DoesNotExist:
         #     object = CommandLine.objects.create(product = product, quantity = quantity, quotation=quotation)
 
+        # return HttpResponse({'success' : True})
+
         command_line, created = CommandLine.objects.get_or_create(product = product, quotation=quotation)
         if created == True:
-            command_line.quantity += quantity
-        else:
             command_line.quantity = quantity
+            command_line.save()
+            return JsonResponse({"product_id":command_line.product.id,
+                                "product_name":command_line.product.name,
+                                "quantity":command_line.quantity,
+                                "unit_price":command_line.product.price,
+                                "command_line_id":command_line.id           
+                                });
+        else:
+            command_line.quantity += quantity
+            command_line.save()
+            return HttpResponse({'success' : True})
 
-        return HttpResponse({'success' : True})
+        
+        

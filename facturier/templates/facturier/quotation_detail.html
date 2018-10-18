@@ -40,7 +40,7 @@
                         <th scope="col"></th>
                     </tr>
                 </thead>
-                <tbody>
+                <tbody class="CommandLineTable">
 
                     {% for line in quotation.commandline_set.all %}
                         <tr>
@@ -53,7 +53,7 @@
                             <td><button id="{{line.id}}" class="btn btn-outline-secondary delete">Delete Line</button></td>
                         </tr>
                     {% endfor %}
-                    <tr>
+                    <tr class="add_Line">
                         <th scope="row"></th>
                         <td> <select class="selectAddProduct" name="">
                         <option selected="selected">Choose Product</option>
@@ -62,7 +62,7 @@
                         {% endfor %}
                         </select> </td>
                         <td> <input id="addQuantityNewLine" type="number" name="quantity" value=""> </td>
-                        <td ></td>
+                        <td></td>
                         <td></td>
                         <td><button id="addLine" class="btn btn-outline-secondary add">Add Line</button></td>
                     </tr>
@@ -73,7 +73,7 @@
 
             <input class="product-list" type="text" value="{{product.name}}" hidden>
             {% endfor %}
-            <a  href="{% url "quotation-pdf" quotation.id %}">salut</a>
+            <a  href="{% url "quotation-pdf" quotation.id %}">Mise en PDF</a>
 
 
 
@@ -99,7 +99,31 @@ function MathTotal() {
     $(".total").text($total + " $");
 }
 
+function editable() {
+$('.editable-click').click(function () {
+    $('button.editable-submit').click(function () {
+        $parentQuantity = $(this).closest(".control-group");
+        $quantity = $parentQuantity.find("input").val();
+
+        $parentUnitPrice = $(this).closest("tr");
+        $unitPrice = $parentUnitPrice.find(".unitPrice").html();
+        $unitPrice = $unitPrice.replace(",", ".");
+
+        $subtot = parseFloat($unitPrice) * $quantity
+
+        $parentSubtotal = $(this).closest("tr")
+        $subtotalTd = $parentSubtotal.find(".subtotal");
+        $subtotalTd.text($subtot + " $")
+        MathTotal();
+
+    });
+});
+} 
+
+
+
 MathTotal();
+editable();
 
     $.fn.editable.defaults.mode = "inline";
 
@@ -109,26 +133,6 @@ MathTotal();
     // $('#city').editable();
     // $('#country').editable();
     $('a[data-name=quantity]').editable();
-
-    $('.editable-click').click(function(){
-        $('button.editable-submit').click(function(){
-            $parentQuantity = $(this).closest(".control-group");
-            $quantity = $parentQuantity.find("input").val();
-
-            $parentUnitPrice = $(this).closest("tr");
-            $unitPrice = $parentUnitPrice.find(".unitPrice").html();
-            $unitPrice = $unitPrice.replace(",",".");
-
-            $subtot = parseFloat($unitPrice)*$quantity
-
-            $parentSubtotal = $(this).closest("tr")
-            $subtotalTd = $parentSubtotal.find(".subtotal");
-            $subtotalTd.text($subtot + " $")
-            MathTotal();
-
-        });
-    });
-
 
         $name = "";
         $name_list = [];
@@ -165,10 +169,28 @@ MathTotal();
             url: "{% url 'quotation-addline'%}",
             type : 'POST',
             data : 'quotation-pk=' + $idQuotation + '&id-product=' + $addProduct + '&quantity=' + $addQuantity,
-            success : function(statue){
+            success : function(request){
                 console.log("success");
+                console.log(request);
+                //$(".CommandLineTable").append(`
+                //<tr>
+                //    <th scope="row">${request["product_id"]}</th>
 
+                //</tr>`);
+                $(`<tr>
+                    <th scope="row">${request.product_id}</th>
+                    <td>${request.product_name}</a></td>
+                    <td><a class="editable editable-click" href="#" data-name="quantity" data-type="text" data-pk="${request.command_line_id}"
+                            data-url="{% url 'commandline-update' %}"
+                            data-title="enter quantity">${request.quantity}
+                        </a></td>
+                    <td class="unitPrice">${request.unit_price} $</td>
+                    <td class="subtotal">${request.unit_price* request.quantity} $</td>
+                    <td><button id="${request.command_line_id}" class="btn btn-outline-secondary delete">Delete Line</button></td>
+                </tr>`).insertBefore(".add_Line");
+                $('a[data-name=quantity]').editable();
                 MathTotal();
+                editable();
                 },
             error : function(resultat, statut, erreur){
                 alert("Request AJAX failed");
