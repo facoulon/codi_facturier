@@ -48,8 +48,10 @@ urlpatterns = [
     url(r"^product/(?P<slug>[-\w]+)/delete$", ProductDeleteView.as_view(), name="product-delete"),
 
     url(r"^quotation/create/$", QuotationCreateView.as_view(), name="quotation-create"),
-    url(r"^quotation/list/$", QuotationListView.as_view(), name="quotation-list"),
-    url(r"^quotation/(?P<pk>[-\w]+)/$", QuotationDetailView.as_view(), name="quotation-detail"),
+
+    url(r"^(?P<type>[-\w]+)/list/$", QuotationListView.as_view(), name="list"),
+
+    url(r"^(?P<type>[-\w]+)/(?P<pk>[-\w]+)/$", QuotationDetailView.as_view(), name="detail"),
 
 
     # url(r"^quotation/update$", UpdateQuotationLineView.as_view(), name="quotation-update"),

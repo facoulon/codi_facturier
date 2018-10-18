@@ -3,13 +3,17 @@
 
 {% load multiply %}
 
-
 {% block content %}
 
 <div class="container quotation">
     <div class="row">
         <img src="{% static 'img/lapin.png' %}" alt="lapin">
         <h1>Codi-Facturier</h1>
+        <br>
+        <form action="." method="post">{% csrf_token %}
+            {{form}}
+            <button type="submit">Submit</button>
+        </form>
     </div>
 
     <div class="row customer-info">
@@ -25,7 +29,11 @@
     <div class="content">
         <div class="title">
             <h2>{{quotation.get_type_display}} n°{{quotation.id}}</h2>
+            {% if quotation.get_type_display == "Quotation" %}
             <h5>{{quotation.quotation_creation_date}}</h5>
+            {% else %}
+            <h5>{{quotation.bill_creation_date}}</h5>
+            {% endif %}
         </div>
 
         <div class="row">
@@ -37,7 +45,9 @@
                         <th scope="col">Quantity</th>
                         <th scope="col">Unit Price</th>
                         <th scope="col">Subtotal Price</th>
+                        {% if quotation.get_type_display == "Quotation" %}
                         <th scope="col"></th>
+                        {% endif %}
                     </tr>
                 </thead>
                 <tbody class="CommandLineTable">
@@ -45,27 +55,39 @@
                     {% for line in quotation.commandline_set.all %}
                         <tr>
                             <th scope="row">{{line.product.id}}</th>
-                            <td>{{line.product.name}}</a></td>
+                            <td>{{line.product.name}}</td>
+                            
+                            
+                            {% if quotation.get_type_display == "Quotation" %}
                             <td><a href="#" data-name="quantity" data-type="text" data-pk="{{line.id}}" data-url="{% url 'commandline-update' %}" data-title="enter quantity">{{line.quantity}}
-                                </a></td>
+                            </a></td>
+                            {% endif %}
+                            <td>{{line.quantity}}</td>
                             <td class="unitPrice">{{line.product.price}} $</td>
                             <td class="subtotal">{% multiply line.product.price line.quantity %} $</td>
+                            {% if quotation.get_type_display == "Quotation" %}
                             <td><button id="{{line.id}}" class="btn btn-outline-secondary delete">Delete Line</button></td>
+                            {% endif %}
                         </tr>
                     {% endfor %}
+
+                    {% if quotation.get_type_display == "Quotation" %}
                     <tr class="add_Line">
                         <th scope="row"></th>
-                        <td> <select class="selectAddProduct" name="">
-                        <option selected="selected">Choose Product</option>
-                        {% for product in products %}
-                        <option value="{{product.id}}">{{product.name}}</option>
-                        {% endfor %}
-                        </select> </td>
+                        <td> 
+                            <select class="selectAddProduct" name="">
+                            <option selected="selected">Choose Product</option>
+                            {% for product in products %}
+                            <option value="{{product.id}}">{{product.name}}</option>
+                            {% endfor %}
+                            </select> 
+                        </td>
                         <td> <input id="addQuantityNewLine" type="number" name="quantity" value=""> </td>
                         <td></td>
                         <td></td>
                         <td><button id="addLine" class="btn btn-outline-secondary add">Add Line</button></td>
                     </tr>
+                    {% endif %}
                 </tbody>
             </table>
             <h4 class="total-h">Total : <span class="total"> </span></h4>
@@ -73,7 +95,7 @@
 
             <input class="product-list" type="text" value="{{product.name}}" hidden>
             {% endfor %}
-            <a  href="{% url "quotation-pdf" quotation.id %}">Mise en PDF</a>
+            <a  href="{% url "quotation-pdf" quotation.id %}">Export PDF</a>
 
 
 
@@ -88,6 +110,7 @@
 <script>
 $(document).ready(function () {
 
+
 function MathTotal() {
     $cpt = "";
     $total = 0;
@@ -99,8 +122,9 @@ function MathTotal() {
     $(".total").text($total + " $");
 }
 
-function editable() {
+function QuantityLineChange() {
 $('.editable-click').click(function () {
+    console.log("efnefub");
     $('button.editable-submit').click(function () {
         $parentQuantity = $(this).closest(".control-group");
         $quantity = $parentQuantity.find("input").val();
@@ -110,94 +134,95 @@ $('.editable-click').click(function () {
         $unitPrice = $unitPrice.replace(",", ".");
 
         $subtot = parseFloat($unitPrice) * $quantity
-
         $parentSubtotal = $(this).closest("tr")
+
         $subtotalTd = $parentSubtotal.find(".subtotal");
         $subtotalTd.text($subtot + " $")
-        MathTotal();
-
     });
 });
 } 
 
-
-
-MathTotal();
-editable();
-
-    $.fn.editable.defaults.mode = "inline";
-
-    // $('#last_name').editable();
-    // $('#first_name').editable();
-    // $('#email').editable();
-    // $('#city').editable();
-    // $('#country').editable();
-    $('a[data-name=quantity]').editable();
-
-        $name = "";
-        $name_list = [];
-        $product_list = $(".product-list");
-        for (i = 0; i < $product_list.length; i++) {
-            $name += "{value : " + $product_list[i].value + ", text:" + $product_list[i].value + "},";
-            $name_list.push($name);
-            $name = "";
-        }
-
-
+function DeleteLine(){
     $(".delete").click(function(){
         $tr = $(this).closest("tr");
-        $.ajax({
-            url: "{% url 'commandline-delete' %}",
-            type : 'POST'  ,
-            data : 'pk=' + this.id,
-            success : function(statue){
+            $.ajax({
+                url: "{% url 'commandline-delete' %}",
+                type : 'POST' ,
+                data : 'pk=' + this.id,
+                success : function(statue){
                 console.log("success");
                 $tr.remove();
                 MathTotal();
                 },
-            error : function(resultat, statut, erreur){
+                error : function(resultat, statut, erreur){
                 alert("Requete AJAX failed");
                 },
-                });
+            });
+    MathTotal();
     });
+}
 
-    $("#addLine").click(function(){
-        $addProduct = $(".selectAddProduct").val();
-        $addQuantity = $("#addQuantityNewLine").val();
-        $idQuotation = {{quotation.id}}
-        $.ajax({
-            url: "{% url 'quotation-addline'%}",
-            type : 'POST',
-            data : 'quotation-pk=' + $idQuotation + '&id-product=' + $addProduct + '&quantity=' + $addQuantity,
-            success : function(request){
-                console.log("success");
-                console.log(request);
-                //$(".CommandLineTable").append(`
-                //<tr>
-                //    <th scope="row">${request["product_id"]}</th>
+$.fn.editable.defaults.mode = "inline";
 
-                //</tr>`);
+
+$('a[data-name=quantity]').editable();
+
+QuantityLineChange();
+MathTotal();
+DeleteLine();
+
+
+$("#addLine").click(function(){
+    $addProduct = $(".selectAddProduct").val();
+    $addQuantity = $("#addQuantityNewLine").val();
+    $idQuotation = {{quotation.id}};
+    $.ajax({
+        url: "{% url 'quotation-addline'%}",
+        type : 'POST',
+        data : 'quotation-pk=' + $idQuotation + '&id-product=' + $addProduct + '&quantity=' + $addQuantity,
+        success : function(request){
+            console.log("success");
+            console.log(request);
+            if (request.product_id != null) {
                 $(`<tr>
                     <th scope="row">${request.product_id}</th>
-                    <td>${request.product_name}</a></td>
-                    <td><a class="editable editable-click" href="#" data-name="quantity" data-type="text" data-pk="${request.command_line_id}"
-                            data-url="{% url 'commandline-update' %}"
-                            data-title="enter quantity">${request.quantity}
-                        </a></td>
-                    <td class="unitPrice">${request.unit_price} $</td>
-                    <td class="subtotal">${request.unit_price* request.quantity} $</td>
-                    <td><button id="${request.command_line_id}" class="btn btn-outline-secondary delete">Delete Line</button></td>
-                </tr>`).insertBefore(".add_Line");
-                $('a[data-name=quantity]').editable();
-                MathTotal();
-                editable();
-                },
-            error : function(resultat, statut, erreur){
-                alert("Request AJAX failed");
-                },
-        });
-
+                    <td>${request.product_name}</td>
+                <td><a class="editable editable-click" href="#" data-name="quantity" data-type="text" data-pk="${request.command_line_id}"
+                    data-url="{% url 'commandline-update' %}"
+                    data-title="enter quantity">${request.quantity}
+                </a></td>
+                <td class="unitPrice">${request.unit_price} $</td>
+                <td class="subtotal">${request.unit_price* request.quantity} $</td>
+                <td><button id="${request.command_line_id}" class="btn btn-outline-secondary delete">Delete Line</button></td>
+            </tr>`).insertBefore(".add_Line");
+            $('a[data-name=quantity]').editable();
+            } else {
+                $input = $('a[data-pk='+request.command_line_id+']')
+                $input.text(
+                    function(){
+                    return request.quantity;
+                    });
+                $tr = $input.parents("tr");
+                $unitPrice = $tr.find(".unitPrice").html();
+                $unitPrice = $unitPrice.replace(",", ".");
+                $subtot = parseFloat($unitPrice) * request.quantity
+                $subtotalTd = $tr.find(".subtotal");
+                $subtotalTd.text($subtot + " $")              
+            }
+        DeleteLine();
+        MathTotal();
+        },
+        error : function(resultat, statut, erreur){
+            alert("Request AJAX failed");
+        },
     });
 });
+
+QuantityLineChange();
+MathTotal();
+
+
+});
+
 </script>
 {% endblock extra_script %}

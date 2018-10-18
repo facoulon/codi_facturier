@@ -1,28 +1,29 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
+from django import template
+from django.conf import settings
+from django.db.models import Q
+from django.db.models.signals import post_save
+from django.http import HttpResponse, JsonResponse
 from django.shortcuts import render
 from django.urls import reverse
+from django.utils.decorators import method_decorator
+from django.views import View
 from django.views.generic import View, ListView, TemplateView, CreateView
 from django.views.generic import DetailView, UpdateView, DeleteView
-from django.http import HttpResponse, JsonResponse
 from django.views.decorators.csrf import csrf_exempt
+from django.views.generic.edit import FormMixin
 
-from django.conf import settings
-
+from .forms import QuotationForm
 from .models import Customer, Product, Quotation, CommandLine
 from .models import ETAT_CHOICES
-from django.utils.decorators import method_decorator
+
+
+from django_weasyprint import WeasyTemplateResponseMixin
 from extra_views import CreateWithInlinesView, InlineFormSet
 from extra_views.generic import GenericInlineFormSet
 
-from django.views import View
-
-from django_weasyprint import WeasyTemplateResponseMixin
-
-from django.db.models.signals import post_save
-from django.db.models import Q
-from django import template
 register = template.Library()
 
 # Create your views here.
@@ -121,22 +122,31 @@ class QuotationListView(ListView):
     def get_queryset(self):
         query = self.request.GET.get('q',None)
         query2 = self.request.GET.get('filter',None)
+        query3 = self.kwargs['type'].upper()
         if query != None:
             if query2 != "":
-                return Quotation.objects.filter(Q(customer__last_name__icontains=query)|Q(customer__first_name__icontains=query), Q(status__icontains=query2), Q(type="QUOTATION"))
+                return Quotation.objects.filter(Q(customer__last_name__icontains=query)|Q(customer__first_name__icontains=query), Q(status__icontains=query2), Q(type=query3))
             else:
-                return Quotation.objects.filter(Q(customer__last_name__icontains=query)|Q(customer__first_name__icontains=query), Q(type="QUOTATION"))
+                return Quotation.objects.filter(Q(customer__last_name__icontains=query)|Q(customer__first_name__icontains=query), Q(type=query3))
             #filter
         else:
-            return Quotation.objects.filter(type="QUOTATION")
+            return Quotation.objects.filter(type=query3)
 
 @method_decorator(csrf_exempt, name='dispatch')
 class QuotationDetailView(DetailView):
     model = Quotation
+    form_class = QuotationForm
+
+    def get_queryset(self):
+        query = self.kwargs['type'].upper()
+            if query == "":
+
+
 
     def get_context_data(self, **kwargs):
         context = DetailView.get_context_data(self, **kwargs)
         context['products'] = Product.objects.all().order_by('name')
+        context['form'] = QuotationForm
         return context
 
 @method_decorator(csrf_exempt, name='dispatch')
@@ -165,7 +175,6 @@ class DeleteCommandLineLineView(View):
         commandline = CommandLine.objects.get(pk = request.POST.get("pk"))
         commandline.delete()
         return HttpResponse({'success' : True})
-
 
 class QuotationDetailPrintView(WeasyTemplateResponseMixin, QuotationDetailView):
     pdf_stylesheets = [
@@ -198,11 +207,13 @@ class QuotationAddNewLineView(View):
                                 "quantity":command_line.quantity,
                                 "unit_price":command_line.product.price,
                                 "command_line_id":command_line.id           
-                                });
+                                })
         else:
             command_line.quantity += quantity
             command_line.save()
-            return HttpResponse({'success' : True})
+            return JsonResponse({'command_line_id' : command_line.id,
+                                'quantity':command_line.quantity,
+                                })
 
         
         

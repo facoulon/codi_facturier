@@ -24,7 +24,7 @@
                     <td>{{quotation.quotation_creation_date}}</td>
                     <td>{{quotation.get_type_display}}</td>
                     <td>{{quotation.get_status_display}}</td>
-                    <td><a href="{% url "quotation-detail" quotation.id %}">Link</a></td>
+                    <td><a href="{% url "detail" quotation.get_type_display.lower quotation.id %}">Link</a></td>
                 </tr>
 
                 {% endfor %}
