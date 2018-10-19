@@ -57,7 +57,7 @@ urlpatterns = [
     url(r"^quotation/transform$", UpdateQuotationTypeView.as_view(), name="quotation-type-transform"),
     url(r"^commandline/update$", UpdateCommandLineLineView.as_view(), name="commandline-update"),
     url(r"^commandline/delete$", DeleteCommandLineLineView.as_view(), name="commandline-delete"),
-    url(r"^quotation/(?P<pk>[-\w]+)/pdf$", QuotationDetailPrintView.as_view(), name="quotation-pdf"),
+    url(r"^(?P<type>[-\w]+)/(?P<pk>[-\w]+)/pdf$", QuotationDetailPrintView.as_view(), name="quotation-pdf"),
     url(r"^quotation/addline$", QuotationAddNewLineView.as_view(), name="quotation-addline"),
 
 ] + static (settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

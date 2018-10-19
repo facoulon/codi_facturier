@@ -178,6 +178,7 @@ class QuotationDetailPrintView(WeasyTemplateResponseMixin, QuotationDetailView):
     pdf_stylesheets = [
         "facturier/static/css/style.css",
     ]
+    
 
 @method_decorator(csrf_exempt, name='dispatch')
 class QuotationAddNewLineView(View):
