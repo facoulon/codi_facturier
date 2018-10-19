@@ -57,8 +57,9 @@
                             {% if quotation.get_type_display == "Quotation" %}
                             <td><a href="#" data-name="quantity" data-type="text" data-pk="{{line.id}}" data-url="{% url 'commandline-update' %}" data-title="enter quantity">{{line.quantity}}
                             </a></td>
-                            {% endif %}
+                            {% else %}  
                             <td>{{line.quantity}}</td>
+                            {% endif %}
                             <td class="unitPrice">{{line.product.price}} $</td>
                             <td class="subtotal">{% multiply line.product.price line.quantity %} $</td>
                             {% if quotation.get_type_display == "Quotation" %}
