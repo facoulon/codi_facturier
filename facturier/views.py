@@ -139,9 +139,7 @@ class QuotationDetailView(DetailView):
 
     def get_queryset(self):
         query = self.kwargs['type'].upper()
-            if query == "":
-
-
+        return Quotation.objects.filter(type=query)
 
     def get_context_data(self, **kwargs):
         context = DetailView.get_context_data(self, **kwargs)
@@ -150,20 +148,20 @@ class QuotationDetailView(DetailView):
         return context
 
 @method_decorator(csrf_exempt, name='dispatch')
-class UpdateCustomerLineView(View):
+class UpdateQuotationTypeView(View):
 
     def post(self, request):
-        customer = Customer.objects.get(pk = request.POST.get("pk"))
-        setattr(customer,request.POST.get("name"),request.POST.get("value"))
-        customer.save()
-        return HttpResponse({'success' : True})
+        quotation = Quotation.objects.get(id = request.POST.get("pk"))
+        setattr(quotation, 'type', 'BILL')
+        quotation.save()
+        return JsonResponse({"redirect_url":reverse( "detail", args=["bill", quotation.id])})
 
 @method_decorator(csrf_exempt, name='dispatch')
 class UpdateCommandLineLineView(View):
 
     def post(self, request):
-        commandline = CommandLine.objects.get(pk = request.POST.get("pk"))
-        setattr(commandline,request.POST.get("name"),request.POST.get("value"))
+        commandline = CommandLine.objects.get(id = request.POST.get("pk"))
+        setattr(commandline,request.POST.get("name"), request.POST.get("value"))
         commandline.save()
         return HttpResponse({'success' : True})
 
@@ -215,5 +213,4 @@ class QuotationAddNewLineView(View):
                                 'quantity':command_line.quantity,
                                 })
 
-        
         

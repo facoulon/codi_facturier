@@ -9,13 +9,8 @@
     <div class="row">
         <img src="{% static 'img/lapin.png' %}" alt="lapin">
         <h1>Codi-Facturier</h1>
-        <br>
-        <form action="." method="post">{% csrf_token %}
-            {{form}}
-            <button type="submit">Submit</button>
-        </form>
     </div>
-
+    
     <div class="row customer-info">
         <div>
             <h5>{{quotation.customer.last_name}}</h5>
@@ -23,12 +18,13 @@
             <h5>{{quotation.customer.email}}</h5>
             <h5>{{quotation.customer.city}}</h5>
             <h5>{{quotation.customer.country}}</h5>
-
+            
         </div>
     </div>
     <div class="content">
         <div class="title">
             <h2>{{quotation.get_type_display}} n°{{quotation.id}}</h2>
+                <button class="btn btn-warning billTransform" value="{{quotation.id}}"> Transform in Bill</button>
             {% if quotation.get_type_display == "Quotation" %}
             <h5>{{quotation.quotation_creation_date}}</h5>
             {% else %}
@@ -110,6 +106,20 @@
 <script>
 $(document).ready(function () {
 
+    $(".billTransform").click(function(){
+         $.ajax({
+            
+            url: "{% url 'quotation-type-transform'%}",
+            type : 'POST',
+            data : 'pk='+ this.value,
+            success : function(response){
+                window.location=response.redirect_url;
+            },
+            error : function(resultat, statut, erreur){
+                alert("Request AJAX failed");
+            }
+        });       
+    });
 
 function MathTotal() {
     $cpt = "";
@@ -134,10 +144,10 @@ $('.editable-click').click(function () {
         $unitPrice = $unitPrice.replace(",", ".");
 
         $subtot = parseFloat($unitPrice) * $quantity
-        $parentSubtotal = $(this).closest("tr")
+        $parentSubtotal = $(this).closest("tr");
 
         $subtotalTd = $parentSubtotal.find(".subtotal");
-        $subtotalTd.text($subtot + " $")
+        $subtotalTd.text($subtot + " $");
     });
 });
 } 
@@ -205,9 +215,9 @@ $("#addLine").click(function(){
                 $tr = $input.parents("tr");
                 $unitPrice = $tr.find(".unitPrice").html();
                 $unitPrice = $unitPrice.replace(",", ".");
-                $subtot = parseFloat($unitPrice) * request.quantity
+                $subtot = parseFloat($unitPrice) * request.quantity;
                 $subtotalTd = $tr.find(".subtotal");
-                $subtotalTd.text($subtot + " $")              
+                $subtotalTd.text($subtot + " $");             
             }
         DeleteLine();
         MathTotal();
@@ -223,6 +233,6 @@ MathTotal();
 
 
 });
-
 </script>
+
 {% endblock extra_script %}
