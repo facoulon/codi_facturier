@@ -2,6 +2,7 @@
 from __future__ import unicode_literals
 
 from django import template
+from django.core.mail import send_mail, EmailMessage
 from django.conf import settings
 from django.db.models import Q
 from django.db.models.signals import post_save
@@ -14,6 +15,8 @@ from django.views.generic import View, ListView, TemplateView, CreateView
 from django.views.generic import DetailView, UpdateView, DeleteView
 from django.views.decorators.csrf import csrf_exempt
 from django.views.generic.edit import FormMixin
+from django.template.loader import render_to_string, get_template
+
 
 from .forms import QuotationForm
 from .models import Customer, Product, Quotation, CommandLine
@@ -178,7 +181,17 @@ class QuotationDetailPrintView(WeasyTemplateResponseMixin, QuotationDetailView):
     pdf_stylesheets = [
         "facturier/static/css/style.css",
     ]
-    
+    # dirname = os.path.(__file__)
+
+    # def hello_pdf():
+    #     # Make a PDF straight from HTML in a string.
+    #     html = render_template('quotation-pdf', name=name)
+
+    #     pdf = HTML(string=html).write_pdf()
+
+    #     if os.path.exists(dirname):
+    #         f = open(os.path.join(dirname, 'mypdf.pdf'), 'wb')
+    #         f.write(pdf)
 
 @method_decorator(csrf_exempt, name='dispatch')
 class QuotationAddNewLineView(View):
@@ -214,4 +227,28 @@ class QuotationAddNewLineView(View):
                                 'quantity':command_line.quantity,
                                 })
 
-        
+import weasyprint
+                                
+
+class QuotationSendEmail(View):
+    """docstring for QuotationSendEmail."""
+
+    def get(self, request, pk, type):
+        quotation = Quotation.objects.get(id=pk)
+        customer = quotation.customer
+        # print customer.email
+
+
+        #generate pdf
+        html = render_to_string('facturier/quotation_detail.html', {'quotation': quotation})
+        url = reverse('detail', args=[type,pk])
+        pdf = weasyprint.HTML(string=html, base_url='url').write_pdf()
+    
+        # send email
+        to_email = (customer.email,)
+        subject = "Your %s " % quotation.type
+        email = EmailMessage(subject, body="vla ton devis", from_email="admin@plop.fr", to=to_email)
+        email.attach(quotation.type + "_{}".format(customer.last_name) + '.pdf', pdf, "application/pdf")
+        email.content_subtype = "pdf"  # Main content is now text/html
+        email.send()
+        return HttpResponse({'success' : True})

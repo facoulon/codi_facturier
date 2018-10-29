@@ -93,7 +93,8 @@
             <input class="product-list" type="text" value="{{product.name}}" hidden>
             {% endfor %}
             <a  href="{% url "quotation-pdf" quotation.type quotation.id %}">Export PDF</a>
-
+            
+            <a  href="{% url "quotation-send-pdf" quotation.type quotation.id %}">Send Email</a>
 
 
         </div>
