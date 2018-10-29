@@ -34,6 +34,7 @@ class IndexView(TemplateView):
     template_name = "facturier/index.html"
 
 class CustomerCreateView(CreateView):
+    permission_required = 'customer.change'
     model = Customer
     fields = "__all__"
     success_url = '/'
@@ -42,6 +43,7 @@ class CustomerCreateView(CreateView):
         return reverse('customer-detail', args=[self.object.slug] )
 
 class CustomerList(ListView):
+    permission_required = 'customer.change'
     model = Customer
     template_name='facturier/customer_list.html'
 
@@ -55,8 +57,10 @@ class CustomerList(ListView):
 
 class CustomerDetail(DetailView):
     model = Customer
+    permission_required = 'customer.change'
 
 class CustomerUpdateView(UpdateView):
+    permission_required = 'customer.change'
     model = Customer
     fields = "__all__"
     template_name = 'facturier/customer_edit.html'
@@ -65,19 +69,23 @@ class CustomerUpdateView(UpdateView):
         return reverse('customer-detail', args=[self.object.slug] )
 
 class CustomerDeleteView(DeleteView):
+    permission_required = 'customer.change'
     model = Customer
     success_url = '/'
     # template_name = ".html"
 
 class ProductCreateView(CreateView):
+    permission_required = 'product.change'
     model = Product
     fields = "__all__"
     success_url = '/'
 
 class ProductDetailView(DetailView):
+    permission_required = 'product.change'
     model = Product
 
 class ProductUpdateView(UpdateView):
+    permission_required = 'product.change'
     model = Product
     fields = "__all__"
     template_name = 'facturier/product_edit.html'
@@ -86,10 +94,12 @@ class ProductUpdateView(UpdateView):
         return reverse('product-detail', args=[self.object.slug] )
 
 class ProductDeleteView(DeleteView):
+    permission_required = 'product.change'
     model = Product
     success_url = '/'
 
 class ProductListView(ListView):
+    permission_required = 'product.change'
     model = Product
     template_name='facturier/product_list.html'
 
@@ -107,6 +117,7 @@ class CommandLineInline(InlineFormSet):
     fields = "__all__"
 
 class QuotationCreateView(CreateWithInlinesView):
+    permission_required = 'quotation.change'
     model = Quotation
     inlines = [CommandLineInline,]
     fields = ("customer","type","status",)
@@ -115,7 +126,7 @@ class QuotationCreateView(CreateWithInlinesView):
 
 class QuotationListView(ListView):
     model = Quotation
-
+    permission_required = 'quotation.change'
     def get_context_data(self, **kwargs):
         context = ListView.get_context_data(self, **kwargs)
         context['status'] = ETAT_CHOICES
@@ -147,12 +158,13 @@ class QuotationDetailView(DetailView):
     def get_context_data(self, **kwargs):
         context = DetailView.get_context_data(self, **kwargs)
         context['products'] = Product.objects.all().order_by('name')
+        context['pdf'] = False
         context['form'] = QuotationForm
         return context
 
 @method_decorator(csrf_exempt, name='dispatch')
 class UpdateQuotationTypeView(View):
-
+    permission_required = 'quotation.change'
     def post(self, request):
         quotation = Quotation.objects.get(id = request.POST.get("pk"))
         setattr(quotation, 'type', 'BILL')
@@ -161,7 +173,7 @@ class UpdateQuotationTypeView(View):
 
 @method_decorator(csrf_exempt, name='dispatch')
 class UpdateCommandLineLineView(View):
-
+    permission_required = 'quotation.change'
     def post(self, request):
         commandline = CommandLine.objects.get(id = request.POST.get("pk"))
         setattr(commandline,request.POST.get("name"), request.POST.get("value"))
@@ -171,44 +183,30 @@ class UpdateCommandLineLineView(View):
 
 @method_decorator(csrf_exempt, name='dispatch')
 class DeleteCommandLineLineView(View):
-
+    permission_required = 'quotation.change'
     def post(self, request):
         commandline = CommandLine.objects.get(pk = request.POST.get("pk"))
         commandline.delete()
         return HttpResponse({'success' : True})
 
 class QuotationDetailPrintView(WeasyTemplateResponseMixin, QuotationDetailView):
+
+    def get_context_data(self, **kwargs):
+        context = QuotationDetailView.get_context_data(self, **kwargs)
+        context['pdf'] = True
+        return context
+
     pdf_stylesheets = [
         "facturier/static/css/style.css",
     ]
-    # dirname = os.path.(__file__)
-
-    # def hello_pdf():
-    #     # Make a PDF straight from HTML in a string.
-    #     html = render_template('quotation-pdf', name=name)
-
-    #     pdf = HTML(string=html).write_pdf()
-
-    #     if os.path.exists(dirname):
-    #         f = open(os.path.join(dirname, 'mypdf.pdf'), 'wb')
-    #         f.write(pdf)
 
 @method_decorator(csrf_exempt, name='dispatch')
 class QuotationAddNewLineView(View):
+    permission_required = 'quotation.change'
     def post(self, request):
         quotation = Quotation.objects.get(id=request.POST.get("quotation-pk"))
         product = Product.objects.get(id=request.POST.get("id-product"))
         quantity = int(request.POST.get('quantity'))
-        # try:
-        #     object =  CommandLine.objects.get(quotation = quotation, product = product)
-        #     object.quantity += quantity
-        #     object.save()
-        
-        
-        # except CommandLine.DoesNotExist:
-        #     object = CommandLine.objects.create(product = product, quantity = quantity, quotation=quotation)
-
-        # return HttpResponse({'success' : True})
 
         command_line, created = CommandLine.objects.get_or_create(product = product, quotation=quotation)
         if created == True:
@@ -232,6 +230,7 @@ import weasyprint
 
 class QuotationSendEmail(View):
     """docstring for QuotationSendEmail."""
+    permission_required = 'quotation.change'
 
     def get(self, request, pk, type):
         quotation = Quotation.objects.get(id=pk)

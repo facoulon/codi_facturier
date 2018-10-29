@@ -24,11 +24,13 @@
     <div class="content">
         <div class="title">
             <h2>{{quotation.get_type_display}} n°{{quotation.id}}</h2>
-                <button class="btn btn-warning billTransform" value="{{quotation.id}}"> Transform in Bill</button>
-            {% if quotation.get_type_display == "Quotation" %}
-            <h5>{{quotation.quotation_creation_date}}</h5>
+            {% if quotation.type == "QUOTATION" %}
+                {% if perms.quotation and perms.quotation.change_quotation and not pdf%}
+                    <button class="btn btn-warning billTransform" value="{{quotation.id}}"> Transform in Bill</button>
+                {% endif %}
+                <h5>{{quotation.quotation_creation_date}}</h5>
             {% else %}
-            <h5>{{quotation.bill_creation_date}}</h5>
+                <h5>{{quotation.bill_creation_date}}</h5>
             {% endif %}
         </div>
 
@@ -41,7 +43,7 @@
                         <th scope="col">Quantity</th>
                         <th scope="col">Unit Price</th>
                         <th scope="col">Subtotal Price</th>
-                        {% if quotation.get_type_display == "Quotation" %}
+                        {% if quotation.type == "QUOTATION" %}
                         <th scope="col"></th>
                         {% endif %}
                     </tr>
@@ -62,13 +64,16 @@
                             {% endif %}
                             <td class="unitPrice">{{line.product.price}} $</td>
                             <td class="subtotal">{% multiply line.product.price line.quantity %} $</td>
-                            {% if quotation.get_type_display == "Quotation" %}
+                            {% if perms.quotation and perms.quotation.change_quotation and not pdf%}
+                            {% if quotation.type == "QUOTATION" %}
                             <td><button id="{{line.id}}" class="btn btn-outline-secondary delete">Delete Line</button></td>
+                            {% endif %}
                             {% endif %}
                         </tr>
                     {% endfor %}
 
-                    {% if quotation.get_type_display == "Quotation" %}
+                    {% if perms.quotation and perms.quotation.change_quotation and not pdf%}
+                    {% if quotation.type == "QUOTATION" %}
                     <tr class="add_Line">
                         <th scope="row"></th>
                         <td> 
@@ -85,6 +90,7 @@
                         <td><button id="addLine" class="btn btn-outline-secondary add">Add Line</button></td>
                     </tr>
                     {% endif %}
+                    {% endif %}
                 </tbody>
             </table>
             <h4 class="total-h">Total : <span class="total"> </span></h4>
@@ -92,10 +98,12 @@
 
             <input class="product-list" type="text" value="{{product.name}}" hidden>
             {% endfor %}
-            <a  href="{% url "quotation-pdf" quotation.type quotation.id %}">Export PDF</a>
-            
-            <a  href="{% url "quotation-send-pdf" quotation.type quotation.id %}">Send Email</a>
-
+            {% if not pdf%}
+            <a class="btn btn-warning"  href="{% url "quotation-pdf" quotation.type quotation.id %}">Export PDF</a>
+            {% endif %}
+            {% if perms.quotation and perms.quotation.change_quotation and not pdf%}
+            <a class="btn btn-warning" href="{% url "quotation-send-pdf" quotation.type quotation.id %}">Send Email</a>
+            {% endif %}
 
         </div>
     </div>
