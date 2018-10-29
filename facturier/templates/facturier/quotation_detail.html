@@ -9,6 +9,7 @@
     <div class="row">
         <img src="{% static 'img/lapin.png' %}" alt="lapin">
         <h1>Codi-Facturier</h1>
+        
     </div>
     
     <div class="row customer-info">
@@ -93,7 +94,7 @@
                     {% endif %}
                 </tbody>
             </table>
-            <h4 class="total-h">Total : <span class="total"> </span></h4>
+            <h4 class="total-h">Total : <span class="total">{{total}}</span>$</h4>
             {% for product in products %}
 
             <input class="product-list" type="text" value="{{product.name}}" hidden>
@@ -139,7 +140,7 @@ function MathTotal() {
         $total += parseFloat($subtotal[i].innerHTML);
     };
     $total = $total.toString();
-    $(".total").text($total + " $");
+    $(".total").text($total);
 }
 
 function QuantityLineChange() {

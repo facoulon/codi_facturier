@@ -16,7 +16,7 @@ from django.views.generic import DetailView, UpdateView, DeleteView
 from django.views.decorators.csrf import csrf_exempt
 from django.views.generic.edit import FormMixin
 from django.template.loader import render_to_string, get_template
-
+from django.contrib.auth.mixins import PermissionRequiredMixin
 
 from .forms import QuotationForm
 from .models import Customer, Product, Quotation, CommandLine
@@ -33,7 +33,7 @@ register = template.Library()
 class IndexView(TemplateView):
     template_name = "facturier/index.html"
 
-class CustomerCreateView(CreateView):
+class CustomerCreateView(PermissionRequiredMixin,CreateView):
     permission_required = 'customer.change'
     model = Customer
     fields = "__all__"
@@ -42,7 +42,7 @@ class CustomerCreateView(CreateView):
     def get_success_url(self):
         return reverse('customer-detail', args=[self.object.slug] )
 
-class CustomerList(ListView):
+class CustomerList(PermissionRequiredMixin, ListView):
     permission_required = 'customer.change'
     model = Customer
     template_name='facturier/customer_list.html'
@@ -55,11 +55,11 @@ class CustomerList(ListView):
         else:
             return Customer.objects.all()
 
-class CustomerDetail(DetailView):
+class CustomerDetail(PermissionRequiredMixin, DetailView):
     model = Customer
     permission_required = 'customer.change'
 
-class CustomerUpdateView(UpdateView):
+class CustomerUpdateView(PermissionRequiredMixin, UpdateView):
     permission_required = 'customer.change'
     model = Customer
     fields = "__all__"
@@ -68,23 +68,23 @@ class CustomerUpdateView(UpdateView):
     def get_success_url(self):
         return reverse('customer-detail', args=[self.object.slug] )
 
-class CustomerDeleteView(DeleteView):
+class CustomerDeleteView(PermissionRequiredMixin, DeleteView):
     permission_required = 'customer.change'
     model = Customer
     success_url = '/'
     # template_name = ".html"
 
-class ProductCreateView(CreateView):
+class ProductCreateView(PermissionRequiredMixin, CreateView):
     permission_required = 'product.change'
     model = Product
     fields = "__all__"
     success_url = '/'
 
-class ProductDetailView(DetailView):
+class ProductDetailView(PermissionRequiredMixin, DetailView):
     permission_required = 'product.change'
     model = Product
 
-class ProductUpdateView(UpdateView):
+class ProductUpdateView(PermissionRequiredMixin, UpdateView):
     permission_required = 'product.change'
     model = Product
     fields = "__all__"
@@ -93,12 +93,12 @@ class ProductUpdateView(UpdateView):
     def get_success_url(self):
         return reverse('product-detail', args=[self.object.slug] )
 
-class ProductDeleteView(DeleteView):
+class ProductDeleteView(PermissionRequiredMixin, DeleteView):
     permission_required = 'product.change'
     model = Product
     success_url = '/'
 
-class ProductListView(ListView):
+class ProductListView(PermissionRequiredMixin, ListView):
     permission_required = 'product.change'
     model = Product
     template_name='facturier/product_list.html'
@@ -116,7 +116,7 @@ class CommandLineInline(InlineFormSet):
     model = CommandLine
     fields = "__all__"
 
-class QuotationCreateView(CreateWithInlinesView):
+class QuotationCreateView(PermissionRequiredMixin, CreateWithInlinesView):
     permission_required = 'quotation.change'
     model = Quotation
     inlines = [CommandLineInline,]
@@ -124,7 +124,7 @@ class QuotationCreateView(CreateWithInlinesView):
     template_name = 'facturier/quotation_form.html'
     success_url = '/'
 
-class QuotationListView(ListView):
+class QuotationListView(PermissionRequiredMixin, ListView):
     model = Quotation
     permission_required = 'quotation.change'
     def get_context_data(self, **kwargs):
@@ -160,10 +160,15 @@ class QuotationDetailView(DetailView):
         context['products'] = Product.objects.all().order_by('name')
         context['pdf'] = False
         context['form'] = QuotationForm
+        allLine = CommandLine.objects.filter(quotation=self.object.id)
+        total = 0
+        for line in allLine:
+            total += line.product.price*line.quantity
+        context['total'] = total
         return context
 
 @method_decorator(csrf_exempt, name='dispatch')
-class UpdateQuotationTypeView(View):
+class UpdateQuotationTypeView(PermissionRequiredMixin, View):
     permission_required = 'quotation.change'
     def post(self, request):
         quotation = Quotation.objects.get(id = request.POST.get("pk"))
@@ -172,7 +177,7 @@ class UpdateQuotationTypeView(View):
         return JsonResponse({"redirect_url":reverse( "detail", args=["bill", quotation.id])})
 
 @method_decorator(csrf_exempt, name='dispatch')
-class UpdateCommandLineLineView(View):
+class UpdateCommandLineLineView(PermissionRequiredMixin, View):
     permission_required = 'quotation.change'
     def post(self, request):
         commandline = CommandLine.objects.get(id = request.POST.get("pk"))
@@ -182,7 +187,7 @@ class UpdateCommandLineLineView(View):
 
 
 @method_decorator(csrf_exempt, name='dispatch')
-class DeleteCommandLineLineView(View):
+class DeleteCommandLineLineView(PermissionRequiredMixin, View):
     permission_required = 'quotation.change'
     def post(self, request):
         commandline = CommandLine.objects.get(pk = request.POST.get("pk"))
@@ -201,7 +206,7 @@ class QuotationDetailPrintView(WeasyTemplateResponseMixin, QuotationDetailView):
     ]
 
 @method_decorator(csrf_exempt, name='dispatch')
-class QuotationAddNewLineView(View):
+class QuotationAddNewLineView(PermissionRequiredMixin, View):
     permission_required = 'quotation.change'
     def post(self, request):
         quotation = Quotation.objects.get(id=request.POST.get("quotation-pk"))
@@ -228,7 +233,7 @@ class QuotationAddNewLineView(View):
 import weasyprint
                                 
 
-class QuotationSendEmail(View):
+class QuotationSendEmail(PermissionRequiredMixin, View):
     """docstring for QuotationSendEmail."""
     permission_required = 'quotation.change'
 
@@ -241,7 +246,7 @@ class QuotationSendEmail(View):
         #generate pdf
         html = render_to_string('facturier/quotation_detail.html', {'quotation': quotation})
         url = reverse('detail', args=[type,pk])
-        pdf = weasyprint.HTML(string=html, base_url='url').write_pdf()
+        pdf = weasyprint.HTML(string=html, base_url='url').write_pdf(stylesheets=["facturier/static/css/style.css",])
     
         # send email
         to_email = (customer.email,)
