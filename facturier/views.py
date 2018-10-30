@@ -34,7 +34,7 @@ class IndexView(TemplateView):
     template_name = "facturier/index.html"
 
 class CustomerCreateView(PermissionRequiredMixin,CreateView):
-    permission_required = 'customer.change'
+    permission_required = 'facturier.add_customer'
     model = Customer
     fields = "__all__"
     success_url = '/'
@@ -42,8 +42,7 @@ class CustomerCreateView(PermissionRequiredMixin,CreateView):
     def get_success_url(self):
         return reverse('customer-detail', args=[self.object.slug] )
 
-class CustomerList(PermissionRequiredMixin, ListView):
-    permission_required = 'customer.change'
+class CustomerList(ListView):
     model = Customer
     template_name='facturier/customer_list.html'
 
@@ -55,12 +54,11 @@ class CustomerList(PermissionRequiredMixin, ListView):
         else:
             return Customer.objects.all()
 
-class CustomerDetail(PermissionRequiredMixin, DetailView):
+class CustomerDetail(DetailView):
     model = Customer
-    permission_required = 'customer.change'
 
 class CustomerUpdateView(PermissionRequiredMixin, UpdateView):
-    permission_required = 'customer.change'
+    permission_required = 'facturier.change_customer'
     model = Customer
     fields = "__all__"
     template_name = 'facturier/customer_edit.html'
@@ -69,23 +67,22 @@ class CustomerUpdateView(PermissionRequiredMixin, UpdateView):
         return reverse('customer-detail', args=[self.object.slug] )
 
 class CustomerDeleteView(PermissionRequiredMixin, DeleteView):
-    permission_required = 'customer.change'
+    permission_required = 'facturier.delete_customer'
     model = Customer
     success_url = '/'
     # template_name = ".html"
 
 class ProductCreateView(PermissionRequiredMixin, CreateView):
-    permission_required = 'product.change'
+    permission_required = 'facturier.add_product'
     model = Product
     fields = "__all__"
     success_url = '/'
 
-class ProductDetailView(PermissionRequiredMixin, DetailView):
-    permission_required = 'product.change'
+class ProductDetailView(DetailView):
     model = Product
 
 class ProductUpdateView(PermissionRequiredMixin, UpdateView):
-    permission_required = 'product.change'
+    permission_required = 'facturier.change_product'
     model = Product
     fields = "__all__"
     template_name = 'facturier/product_edit.html'
@@ -94,12 +91,11 @@ class ProductUpdateView(PermissionRequiredMixin, UpdateView):
         return reverse('product-detail', args=[self.object.slug] )
 
 class ProductDeleteView(PermissionRequiredMixin, DeleteView):
-    permission_required = 'product.change'
+    permission_required = 'facturier.delete_product'
     model = Product
     success_url = '/'
 
-class ProductListView(PermissionRequiredMixin, ListView):
-    permission_required = 'product.change'
+class ProductListView(ListView):
     model = Product
     template_name='facturier/product_list.html'
 
@@ -117,16 +113,15 @@ class CommandLineInline(InlineFormSet):
     fields = "__all__"
 
 class QuotationCreateView(PermissionRequiredMixin, CreateWithInlinesView):
-    permission_required = 'quotation.change'
+    permission_required = 'facturier.add_quotation'
     model = Quotation
     inlines = [CommandLineInline,]
     fields = ("customer","type","status",)
     template_name = 'facturier/quotation_form.html'
     success_url = '/'
 
-class QuotationListView(PermissionRequiredMixin, ListView):
+class QuotationListView(ListView):
     model = Quotation
-    permission_required = 'quotation.change'
     def get_context_data(self, **kwargs):
         context = ListView.get_context_data(self, **kwargs)
         context['status'] = ETAT_CHOICES
@@ -169,7 +164,7 @@ class QuotationDetailView(DetailView):
 
 @method_decorator(csrf_exempt, name='dispatch')
 class UpdateQuotationTypeView(PermissionRequiredMixin, View):
-    permission_required = 'quotation.change'
+    permission_required = 'facturier.change_quotation'
     def post(self, request):
         quotation = Quotation.objects.get(id = request.POST.get("pk"))
         setattr(quotation, 'type', 'BILL')
@@ -178,7 +173,7 @@ class UpdateQuotationTypeView(PermissionRequiredMixin, View):
 
 @method_decorator(csrf_exempt, name='dispatch')
 class UpdateCommandLineLineView(PermissionRequiredMixin, View):
-    permission_required = 'quotation.change'
+    permission_required = 'facturier.change_quotation'
     def post(self, request):
         commandline = CommandLine.objects.get(id = request.POST.get("pk"))
         setattr(commandline,request.POST.get("name"), request.POST.get("value"))
@@ -188,7 +183,7 @@ class UpdateCommandLineLineView(PermissionRequiredMixin, View):
 
 @method_decorator(csrf_exempt, name='dispatch')
 class DeleteCommandLineLineView(PermissionRequiredMixin, View):
-    permission_required = 'quotation.change'
+    permission_required = 'facturier.delete_commandline'
     def post(self, request):
         commandline = CommandLine.objects.get(pk = request.POST.get("pk"))
         commandline.delete()
@@ -207,7 +202,7 @@ class QuotationDetailPrintView(WeasyTemplateResponseMixin, QuotationDetailView):
 
 @method_decorator(csrf_exempt, name='dispatch')
 class QuotationAddNewLineView(PermissionRequiredMixin, View):
-    permission_required = 'quotation.change'
+    permission_required = 'facturier.change_quotation'
     def post(self, request):
         quotation = Quotation.objects.get(id=request.POST.get("quotation-pk"))
         product = Product.objects.get(id=request.POST.get("id-product"))
@@ -235,7 +230,7 @@ import weasyprint
 
 class QuotationSendEmail(PermissionRequiredMixin, View):
     """docstring for QuotationSendEmail."""
-    permission_required = 'quotation.change'
+    permission_required = 'facturier.change_quotation'
 
     def get(self, request, pk, type):
         quotation = Quotation.objects.get(id=pk)

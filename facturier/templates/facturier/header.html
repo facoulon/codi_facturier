@@ -1,4 +1,5 @@
 {% load static %}
+
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
         <a class="navbar-brand" href="{% url 'index' %}"><img id="logo" src="{% static 'img/lapin.png' %}" alt=""></a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup"
@@ -14,42 +15,42 @@
                 <li class="nav-item"></li>
                 <li class="nav-item"></li>
                 <li class="nav-item"></li>
-                {% if perms.customer and perms.customer.change_quotation %}
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown"
                         aria-haspopup="true" aria-expanded="false">
                         Customers
                     </a>
                     <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                {% if perms.facturier and perms.facturier.add_customer %}
                         <a class="dropdown-item" href="{% url 'customer-create' %}">Create</a>
+                {% endif %}
                         <a class="dropdown-item" href="{% url 'customer-list' %}">List</a>
                     </div>
                 </li>
-                {% endif %}
-                {% if perms.product and perms.product.change_product %}
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true"
                         aria-expanded="false">
                         Products
                     </a>
                     <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                {% if perms.facturier and perms.facturier.add_product %}
                         <a class="dropdown-item" href="{% url 'product-create' %}">Create</a>
+                {% endif %}
                          <a class="dropdown-item" href="{% url 'product-list' %}">List</a>
                     </div>
                 </li>
-                {% endif %}
-                {% if perms.quotation and perms.quotation.change_quotation %}
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true"
                         aria-expanded="false">
                         Quotations
                     </a>
                     <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                {% if perms.facturier and perms.facturier.change_quotation %}
                         <a class="dropdown-item" href="{% url 'quotation-create'  %}">Create</a>
+                {% endif %}
                         <a class="dropdown-item" href="{% url 'list' "quotation" %}">List</a>
                     </div>
                 </li>
-                {% endif %}
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true"
                         aria-expanded="false">

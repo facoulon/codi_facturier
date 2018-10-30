@@ -33,6 +33,9 @@
         </div>
     </div>
 </div>
+
+{% endblock content %}
+{% block extra_script %}
 <script>
     $(document).ready(function () {
         $("#DeleteSubmit").click(function (event) {
@@ -42,4 +45,4 @@
         });
     });
 </script>
-{% endblock content %}
+{% endblock extra_script %}
